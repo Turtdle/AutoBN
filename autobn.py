@@ -422,7 +422,7 @@ if __name__ == "__main__":
             time.sleep(0.5)
             pyautogui.click(1570,1031)
             pyautogui.screenshot("shared_folder/screenshot.png")
-            time.sleep(0.5)
+            time.sleep(1.5)
             pyautogui.click(1570,1031)
             counter+=1
             

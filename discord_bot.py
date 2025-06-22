@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands, tasks
 import os
 import asyncio
+import subprocess
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -18,9 +19,14 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 SCREENSHOT_PATH = os.getenv('SCREENSHOT_PATH', 'shared_folder\\screenshot.png')
 CHANNEL_NAME = os.getenv('CHANNEL_NAME', 'battle-nations')
 CHECK_INTERVAL = int(os.getenv('CHECK_INTERVAL', '10'))  # seconds
+PYTHON_PATH = os.getenv('PYTHON_PATH', '.venv\\Scripts\\python.exe')
+SCRIPT_NAME = os.getenv('SCRIPT_NAME', 'autobn.py')
 
 # Store the last message ID to delete it later
 last_message_id = None
+
+# Store the running autobn.py process
+autobn_process = None
 
 @bot.event
 async def on_ready():
@@ -83,9 +89,18 @@ async def before_screenshot_checker():
 async def status_command(ctx):
     """Check bot status and last screenshot info"""
     screenshot_exists = os.path.exists(SCREENSHOT_PATH)
-    status_msg = f"🤖 Bot is running\n📁 Screenshot exists: {screenshot_exists}"
+    
+    # Check if autobn.py is running
+    autobn_running = autobn_process and autobn_process.poll() is None
+    
+    status_msg = f"🤖 Bot is running\n📁 Screenshot exists: {screenshot_exists}\n🐍 {SCRIPT_NAME} running: {autobn_running}"
+    
+    if autobn_running:
+        status_msg += f" (PID: {autobn_process.pid})"
+    
     if last_message_id:
         status_msg += f"\n📸 Last message ID: {last_message_id}"
+    
     await ctx.send(status_msg)
 
 @bot.command(name='check')
@@ -118,6 +133,71 @@ async def stop_command(ctx):
     except Exception as e:
         await ctx.send(f"❌ Error creating stop.txt: {e}")
         print(f"Error creating stop file: {e}")
+
+@bot.command(name='start')
+async def start_command(ctx):
+    """Start autobn.py using virtual environment Python"""
+    global autobn_process
+    
+    try:
+        # Check if process is already running
+        if autobn_process and autobn_process.poll() is None:
+            await ctx.send("❌ autobn.py is already running!")
+            return
+        
+        # Check if files exist
+        if not os.path.exists(PYTHON_PATH):
+            await ctx.send(f"❌ Virtual environment Python not found at: `{PYTHON_PATH}`")
+            return
+            
+        if not os.path.exists(SCRIPT_NAME):
+            await ctx.send(f"❌ Script not found: `{SCRIPT_NAME}`")
+            return
+        
+        # Start the process (hidden, no window)
+        autobn_process = subprocess.Popen(
+            [PYTHON_PATH, SCRIPT_NAME],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            creationflags=subprocess.CREATE_NO_WINDOW  # Runs hidden without window
+        )
+        
+        await ctx.send(f"✅ Started {SCRIPT_NAME} (PID: {autobn_process.pid})")
+        print(f"Started {SCRIPT_NAME} with PID: {autobn_process.pid}")
+        
+    except Exception as e:
+        await ctx.send(f"❌ Error starting {SCRIPT_NAME}: {e}")
+        print(f"Error starting {SCRIPT_NAME}: {e}")
+
+@bot.command(name='kill')
+async def kill_command(ctx):
+    """Stop the running autobn.py process"""
+    global autobn_process
+    
+    try:
+        if not autobn_process or autobn_process.poll() is not None:
+            await ctx.send(f"❌ {SCRIPT_NAME} is not running!")
+            return
+        
+        # Terminate the process
+        autobn_process.terminate()
+        
+        # Wait a moment for graceful shutdown
+        try:
+            autobn_process.wait(timeout=5)
+            await ctx.send(f"✅ {SCRIPT_NAME} stopped gracefully")
+        except subprocess.TimeoutExpired:
+            # Force kill if it doesn't stop gracefully
+            autobn_process.kill()
+            await ctx.send(f"⚠️ {SCRIPT_NAME} force-killed (didn't stop gracefully)")
+        
+        autobn_process = None
+        print(f"{SCRIPT_NAME} process stopped")
+        
+    except Exception as e:
+        await ctx.send(f"❌ Error stopping {SCRIPT_NAME}: {e}")
+        print(f"Error stopping {SCRIPT_NAME}: {e}")
 
 # Error handling
 @bot.event

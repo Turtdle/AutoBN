@@ -9,11 +9,13 @@ load_dotenv()
 
 # Bot setup
 intents = discord.Intents.default()
+# Enable message content intent for commands (requires privileged intent)
+# If you don't enable this in Discord Developer Portal, comment out the next line
 intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 # Configuration from environment variables
-SCREENSHOT_PATH = os.getenv('SCREENSHOT_PATH', '/shared_folder/screenshot.png')
+SCREENSHOT_PATH = os.getenv('SCREENSHOT_PATH', 'shared_folder\\screenshot.png')
 CHANNEL_NAME = os.getenv('CHANNEL_NAME', 'battle-nations')
 CHECK_INTERVAL = int(os.getenv('CHECK_INTERVAL', '10'))  # seconds
 
@@ -94,6 +96,28 @@ async def manual_check(ctx):
         await ctx.send("Manual screenshot check completed!")
     else:
         await ctx.send("You don't have permission to use this command.")
+
+@bot.command(name='stop')
+async def stop_command(ctx):
+    """Create a stop.txt file"""
+    try:
+        # Create empty stop.txt file in the same directory as the screenshot path
+        screenshot_dir = os.path.dirname(SCREENSHOT_PATH)
+        if not screenshot_dir:  # If no directory specified, use current directory
+            stop_file_path = "stop.txt"
+        else:
+            stop_file_path = os.path.join(screenshot_dir, "stop.txt")
+        
+        # Create empty file
+        with open(stop_file_path, 'w') as f:
+            pass  # Creates an empty file
+        
+        await ctx.send(f"✅ Created stop.txt at: `{stop_file_path}`")
+        print(f"Stop file created: {stop_file_path}")
+        
+    except Exception as e:
+        await ctx.send(f"❌ Error creating stop.txt: {e}")
+        print(f"Error creating stop file: {e}")
 
 # Error handling
 @bot.event

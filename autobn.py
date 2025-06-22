@@ -402,6 +402,23 @@ def check_select():
     target_rgb = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
     return pyautogui.pixel(2422,900) == target_rgb
 
+def check_for_stop():
+    """Check if stop.txt file exists, delete it if found, and return True if stopping"""
+    import os
+    
+    stop_file_path = "shared_folder\\stop.txt"
+    
+    if os.path.exists(stop_file_path):
+        try:
+            os.remove(stop_file_path)
+            print("Stop signal detected - stop.txt found and removed")
+            return True
+        except Exception as e:
+            print(f"Error removing stop.txt: {e}")
+            return True 
+    
+    return False
+
 if __name__ == "__main__":
     counter = 0
     time.sleep(1)
@@ -415,7 +432,6 @@ if __name__ == "__main__":
             while not check_select():
                 time.sleep(0.1) 
             time.sleep(random.uniform(1, 3))
-            
             scroll_right()
             fight()
             turn_loop()
@@ -425,4 +441,6 @@ if __name__ == "__main__":
             time.sleep(1.5)
             pyautogui.click(1570,1031)
             counter+=1
+            if check_for_stop():
+                break
             

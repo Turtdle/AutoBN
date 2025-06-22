@@ -4,6 +4,8 @@ import os
 import asyncio
 import subprocess
 from dotenv import load_dotenv
+from PIL import ImageGrab
+import io
 
 # Load environment variables
 load_dotenv()
@@ -103,14 +105,29 @@ async def status_command(ctx):
     
     await ctx.send(status_msg)
 
-@bot.command(name='check')
-async def manual_check(ctx):
-    """Manually trigger screenshot check"""
-    if ctx.author.guild_permissions.manage_messages:
-        await screenshot_checker()
-        await ctx.send("Manual screenshot check completed!")
-    else:
-        await ctx.send("You don't have permission to use this command.")
+@bot.command(name='screenshot')
+async def screenshot_command(ctx):
+    """Take a screenshot of all monitors and send to Discord"""
+    try:
+        await ctx.send("📸 Taking screenshot...")
+        
+        # Capture entire screen including all monitors
+        screenshot = ImageGrab.grab(all_screens=True)
+        
+        # Convert to bytes for Discord
+        img_bytes = io.BytesIO()
+        screenshot.save(img_bytes, format='PNG')
+        img_bytes.seek(0)
+        
+        # Send to Discord
+        file = discord.File(img_bytes, filename="full_screenshot.png")
+        await ctx.send("📸 Screenshot captured:", file=file)
+        
+        print("Manual screenshot taken and sent")
+        
+    except Exception as e:
+        await ctx.send(f"❌ Error taking screenshot: {e}")
+        print(f"Error taking screenshot: {e}")
 
 @bot.command(name='stop')
 async def stop_command(ctx):

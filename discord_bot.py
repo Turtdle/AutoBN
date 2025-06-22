@@ -114,8 +114,15 @@ async def manual_check(ctx):
 
 @bot.command(name='stop')
 async def stop_command(ctx):
-    """Create a stop.txt file"""
+    """Create a stop.txt file and monitor process shutdown"""
+    global autobn_process
+    
     try:
+        # Check if process is even running
+        if not autobn_process or autobn_process.poll() is not None:
+            await ctx.send("❌ autobn.py is not running!")
+            return
+        
         # Create empty stop.txt file in the same directory as the screenshot path
         screenshot_dir = os.path.dirname(SCREENSHOT_PATH)
         if not screenshot_dir:  # If no directory specified, use current directory
@@ -127,12 +134,32 @@ async def stop_command(ctx):
         with open(stop_file_path, 'w') as f:
             pass  # Creates an empty file
         
-        await ctx.send(f"✅ Created stop.txt at: `{stop_file_path}`")
+        await ctx.send(f"✅ Created stop.txt at: `{stop_file_path}`\n⏳ Monitoring shutdown...")
         print(f"Stop file created: {stop_file_path}")
         
+        # Monitor the process shutdown
+        check_count = 0
+        while autobn_process and autobn_process.poll() is None:
+            await asyncio.sleep(2)  # Wait 2 seconds
+            check_count += 1
+            
+            # Send status every few checks to avoid spam
+            if check_count % 3 == 0:  # Every 6 seconds (3 * 2 seconds)
+                await ctx.send(f"⏳ Still waiting for {SCRIPT_NAME} to stop... ({check_count * 2}s)")
+            
+            # Safety timeout after 60 seconds
+            if check_count >= 30:  # 30 * 2 = 60 seconds
+                await ctx.send(f"⚠️ {SCRIPT_NAME} didn't stop after 60 seconds. Use `!kill` to force stop.")
+                return
+        
+        # Process has stopped
+        autobn_process = None
+        await ctx.send(f"✅ {SCRIPT_NAME} has stopped successfully! ({check_count * 2}s)")
+        print(f"{SCRIPT_NAME} stopped after {check_count * 2} seconds")
+        
     except Exception as e:
-        await ctx.send(f"❌ Error creating stop.txt: {e}")
-        print(f"Error creating stop file: {e}")
+        await ctx.send(f"❌ Error during stop process: {e}")
+        print(f"Error during stop process: {e}")
 
 @bot.command(name='start')
 async def start_command(ctx):

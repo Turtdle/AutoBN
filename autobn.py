@@ -10,6 +10,8 @@ def green_check():
     pyautogui.mouseDown(1268,655)
     pyautogui.moveTo(1119,372,1.5)
     pyautogui.mouseUp(1268,655)
+    time.sleep(0.5)
+    pyautogui.click(1268,655)
     pyautogui.click(1182,479)
 
 def baby_raptor():
@@ -58,9 +60,9 @@ def heavy():
     pyautogui.click(2518,1350)
 
 def select_saboteur():
-    pyautogui.mouseDown(1120,900)
+    pyautogui.mouseDown(600,900)
     time.sleep(random.uniform(0.09, 0.11))
-    pyautogui.mouseUp(1120,900)
+    pyautogui.mouseUp(600,900)
 
 def select_field_agent():
     pyautogui.mouseDown(1400,1400)
@@ -356,27 +358,20 @@ def scroll_right():
 
 
     pyautogui.moveTo(1400,1356)
-    for i in range(50):
-        pyautogui.scroll(-3)
+    for i in range(9):
+        pyautogui.scroll(3)
         time.sleep(0.001)
     
     time.sleep(1)
     for i in range(4):
-        pyautogui.click(1550,1360)
-    pyautogui.click(1250,1350)
-    for i in range(25):
+        pyautogui.click(400,1360)
+    pyautogui.click(120,1350)
+    for i in range(10):
         pyautogui.scroll(-3)
         time.sleep(0.0001)
-    pyautogui.click(2449,1352) #tk
-    #pyautogui.click(2300,1352) #hrv
-    pyautogui.moveTo(2445,1356)
-    for i in range(90):
-        pyautogui.scroll(3,2445,1356)
-        time.sleep(0.0001)
-    pyautogui.click(1420,1350)
-    #pyautogui.click(2284,1350)
-    #
-    
+    pyautogui.click(2350,1352) #super tank
+    pyautogui.click(1333,1352) #brim
+
 def move_top_wimp():
     pyautogui.mouseDown(718,484)
     pyautogui.moveTo(718,739,1)
@@ -401,24 +396,27 @@ def check_select():
     hex_color = "ffffff"
     target_rgb = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
     return pyautogui.pixel(2422,900) == target_rgb
-
 def check_for_stop():
     """Check if stop.txt file exists, delete it if found, and return True if stopping"""
     import os
     
-    stop_file_path = "shared_folder\\stop.txt"
+    # Windows path (backslashes) - adjust to match your screenshot folder
+    stop_file_path = "shared_folder\\stop.txt"  
+    
+    # Alternative: forward slashes also work on Windows
+    # stop_file_path = "shared_folder/stop.txt"
     
     if os.path.exists(stop_file_path):
         try:
+            # Delete the stop file so it only triggers once
             os.remove(stop_file_path)
             print("Stop signal detected - stop.txt found and removed")
             return True
         except Exception as e:
             print(f"Error removing stop.txt: {e}")
-            return True 
+            return True  # Still signal to stop even if we can't delete
     
     return False
-
 if __name__ == "__main__":
     counter = 0
     time.sleep(1)
@@ -429,18 +427,33 @@ if __name__ == "__main__":
             atk()   
             time.sleep(random.uniform(0.9, 1.5))
             green_check()
-            while not check_select():
-                time.sleep(0.1) 
+            done = False
+            while not done:
+                w = 0
+                try_again = False
+                while not try_again:
+                    if check_select():
+                        done = True
+                        break
+                    time.sleep(1) 
+                    w+=1
+                    if w >= 10:
+                        try_again = True
+                green_check()
+
             time.sleep(random.uniform(1, 3))
+            
             scroll_right()
+            
             fight()
             turn_loop()
             time.sleep(0.5)
             pyautogui.click(1570,1031)
             pyautogui.screenshot("shared_folder/screenshot.png")
-            time.sleep(1.5)
+            time.sleep(0.5)
             pyautogui.click(1570,1031)
             counter+=1
             if check_for_stop():
                 break
+                
             

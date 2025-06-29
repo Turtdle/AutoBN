@@ -30,6 +30,9 @@ last_message_id = None
 # Store the running autobn.py process
 autobn_process = None
 
+# Image counter
+image_counter = 0
+
 @bot.event
 async def on_ready():
     print(f'{bot.user} has logged in!')
@@ -38,7 +41,7 @@ async def on_ready():
 @tasks.loop(seconds=CHECK_INTERVAL)
 async def screenshot_checker():
     """Check for screenshot and send it if found"""
-    global last_message_id
+    global last_message_id, image_counter
     
     # Check if screenshot exists
     if not os.path.exists(SCREENSHOT_PATH):
@@ -67,9 +70,12 @@ async def screenshot_checker():
         # Send new screenshot
         with open(SCREENSHOT_PATH, 'rb') as f:
             file = discord.File(f, filename="screenshot.png")
-            message = await channel.send(file=file)
+            # Increment the image counter
+            image_counter += 1
+            # Include counter in the message
+            message = await channel.send(f"📸 Screenshot #{image_counter}", file=file)
             last_message_id = message.id
-            print(f"Screenshot sent to #{CHANNEL_NAME}")
+            print(f"Screenshot #{image_counter} sent to #{CHANNEL_NAME}")
         
         # Delete local file
         os.remove(SCREENSHOT_PATH)
@@ -95,7 +101,12 @@ async def status_command(ctx):
     # Check if autobn.py is running
     autobn_running = autobn_process and autobn_process.poll() is None
     
-    status_msg = f"🤖 Bot is running\n📁 Screenshot exists: {screenshot_exists}\n🐍 {SCRIPT_NAME} running: {autobn_running}"
+    status_msg = (
+        f"🤖 Bot is running\n"
+        f"📁 Screenshot exists: {screenshot_exists}\n"
+        f"🐍 {SCRIPT_NAME} running: {autobn_running}\n"
+        f"📊 Images sent: {image_counter}"
+    )
     
     if autobn_running:
         status_msg += f" (PID: {autobn_process.pid})"
@@ -108,6 +119,8 @@ async def status_command(ctx):
 @bot.command(name='screenshot')
 async def screenshot_command(ctx):
     """Take a screenshot of all monitors and send to Discord"""
+    global image_counter
+    
     try:
         await ctx.send("📸 Taking screenshot...")
         
@@ -119,20 +132,38 @@ async def screenshot_command(ctx):
         screenshot.save(img_bytes, format='PNG')
         img_bytes.seek(0)
         
-        # Send to Discord
-        file = discord.File(img_bytes, filename="full_screenshot.png")
-        await ctx.send("📸 Screenshot captured:", file=file)
+        # Increment counter for manual screenshots too
+        image_counter += 1
         
-        print("Manual screenshot taken and sent")
+        # Send to Discord with counter
+        file = discord.File(img_bytes, filename="full_screenshot.png")
+        await ctx.send(f"📸 Screenshot #{image_counter} captured:", file=file)
+        
+        print(f"Manual screenshot #{image_counter} taken and sent")
         
     except Exception as e:
         await ctx.send(f"❌ Error taking screenshot: {e}")
         print(f"Error taking screenshot: {e}")
 
+@bot.command(name='counter')
+async def counter_command(ctx):
+    """Show the current image counter value"""
+    await ctx.send(f"📊 Images sent: {image_counter}")
+    print(f"Counter command used. Current count: {image_counter}")
+
+@bot.command(name='resetcounter')
+async def reset_counter_command(ctx):
+    """Reset the image counter to zero"""
+    global image_counter
+    old_count = image_counter
+    image_counter = 0
+    await ctx.send(f"🔄 Image counter reset from {old_count} to 0")
+    print(f"Counter reset from {old_count} to 0")
+
 @bot.command(name='stop')
 async def stop_command(ctx):
-    """Create a stop.txt file and monitor process shutdown"""
-    global autobn_process
+    """Create a stop.txt file, monitor process shutdown, and reset counter"""
+    global autobn_process, image_counter
     
     try:
         # Check if process is even running
@@ -165,14 +196,22 @@ async def stop_command(ctx):
                 await ctx.send(f"⏳ Still waiting for {SCRIPT_NAME} to stop... ({check_count * 2}s)")
             
             # Safety timeout after 60 seconds
-            if check_count >= 30:  # 30 * 2 = 60 seconds
-                await ctx.send(f"⚠️ {SCRIPT_NAME} didn't stop after 60 seconds. Use `!kill` to force stop.")
+            if check_count >= 500:  # 30 * 2 = 60 seconds
+                await ctx.send(f"⚠️ {SCRIPT_NAME} didn't stop after 1000 seconds. Use `!kill` to force stop.")
                 return
         
         # Process has stopped
         autobn_process = None
-        await ctx.send(f"✅ {SCRIPT_NAME} has stopped successfully! ({check_count * 2}s)")
+        
+        # Store old counter value for message
+        old_count = image_counter
+        
+        # Reset counter when process stops
+        image_counter = 0
+        
+        await ctx.send(f"✅ {SCRIPT_NAME} has stopped successfully! ({check_count * 2}s)\n🔄 Image counter reset from {old_count} to 0")
         print(f"{SCRIPT_NAME} stopped after {check_count * 2} seconds")
+        print(f"Counter reset from {old_count} to 0")
         
     except Exception as e:
         await ctx.send(f"❌ Error during stop process: {e}")

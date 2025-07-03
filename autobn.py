@@ -60,9 +60,9 @@ def heavy():
     pyautogui.click(2518,1350)
 
 def select_saboteur():
-    pyautogui.mouseDown(600,900)
+    pyautogui.mouseDown(1200,900)
     time.sleep(random.uniform(0.09, 0.11))
-    pyautogui.mouseUp(600,900)
+    pyautogui.mouseUp(1200,900)
 
 def select_field_agent():
     pyautogui.mouseDown(1400,1400)
@@ -305,9 +305,6 @@ def turn_loop():
         time.sleep(0.1)
     select_wimp()
     select_wimp()
-    pyautogui.mouseDown(747,1325)
-    time.sleep(random.uniform(0.09, 0.11))
-    pyautogui.mouseUp(747,1325)
     time.sleep(0.3)
     pyautogui.mouseDown(1426,553)
     time.sleep(random.uniform(0.09, 0.11))
@@ -316,24 +313,12 @@ def turn_loop():
         time.sleep(0.1)
     select_saboteur()
     select_saboteur()
-    pyautogui.mouseDown(747,1325)
+
+    pyautogui.mouseDown(1800,700)
     time.sleep(random.uniform(0.09, 0.11))
-    pyautogui.mouseUp(747,1325)
-    pyautogui.mouseDown(1644,256)
-    time.sleep(random.uniform(0.09, 0.11))
-    pyautogui.mouseUp(1644,256)
-    pyautogui.mouseDown(1864,391)
-    time.sleep(random.uniform(0.09, 0.11))
-    pyautogui.mouseUp(1864,391)
-    pyautogui.mouseDown(2065,445)
-    time.sleep(random.uniform(0.09, 0.11))
-    pyautogui.mouseUp(2065,445)
+    pyautogui.mouseUp(1800,700)
+
     time.sleep(1)
-
-    
-
-
-
 
 
     heavy_num = 0
@@ -352,25 +337,20 @@ def turn_loop():
             break
 
 def scroll_right():
-    
-
-    
-
-
     pyautogui.moveTo(1400,1356)
-    for i in range(9):
+    for i in range(11):
         pyautogui.scroll(3)
         time.sleep(0.001)
     
     time.sleep(1)
-    for i in range(4):
-        pyautogui.click(400,1360)
-    pyautogui.click(120,1350)
-    for i in range(10):
+    for i in range(5):
+        pyautogui.click(250,1360)
+    #pyautogui.click(120,1350) # wall
+    for i in range(19):
         pyautogui.scroll(-3)
         time.sleep(0.0001)
-    pyautogui.click(2350,1352) #super tank
-    pyautogui.click(1333,1352) #brim
+    pyautogui.click(1166,1352) #chucker
+    pyautogui.click(1725,1352) #bike
 
 def move_top_wimp():
     pyautogui.mouseDown(718,484)
@@ -386,7 +366,6 @@ def move_bottom_wimp():
     pyautogui.mouseDown(1555,892)
     pyautogui.moveTo(1092,933,1)
     pyautogui.mouseUp(1092,933)
-
 def wait_for_atk_button():
     hex_color = "73e609"
     target_rgb = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
@@ -444,7 +423,7 @@ if __name__ == "__main__":
             time.sleep(random.uniform(1, 3))
             
             scroll_right()
-            
+
             fight()
             turn_loop()
             time.sleep(0.5)
@@ -455,5 +434,7 @@ if __name__ == "__main__":
             counter+=1
             if check_for_stop():
                 break
+                
+ 
                 
             

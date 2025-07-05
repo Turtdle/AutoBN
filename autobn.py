@@ -313,10 +313,13 @@ def turn_loop():
         time.sleep(0.1)
     select_saboteur()
     select_saboteur()
-
-    pyautogui.mouseDown(1800,700)
+    pyautogui.mouseDown(850,1350)
     time.sleep(random.uniform(0.09, 0.11))
-    pyautogui.mouseUp(1800,700)
+    pyautogui.mouseUp(850   ,1350)
+    time.sleep(0.1)
+    pyautogui.mouseDown(1650,450)
+    time.sleep(random.uniform(0.09, 0.11))
+    pyautogui.mouseUp(1650,450)
 
     time.sleep(1)
 
@@ -345,12 +348,24 @@ def scroll_right():
     time.sleep(1)
     for i in range(5):
         pyautogui.click(250,1360)
-    #pyautogui.click(120,1350) # wall
     for i in range(19):
         pyautogui.scroll(-3)
         time.sleep(0.0001)
-    pyautogui.click(1166,1352) #chucker
+    
     pyautogui.click(1725,1352) #bike
+
+    for i in range(3):
+        pyautogui.moveTo(60,1350,0.3)
+        pyautogui.dragTo(2400, 900,0.3, button='left') 
+
+    pyautogui.click(800,1352) #PK
+    time.sleep(0.2)
+    for i in range(4):
+        pyautogui.moveTo(2400,1350,0.2)
+        pyautogui.dragTo(100, 900,0.2, button='left')
+    time.sleep(1)
+
+
 
 def move_top_wimp():
     pyautogui.mouseDown(718,484)
@@ -414,7 +429,7 @@ if __name__ == "__main__":
                     if check_select():
                         done = True
                         break
-                    time.sleep(1) 
+                    time.sleep(1.5) 
                     w+=1
                     if w >= 10:
                         try_again = True

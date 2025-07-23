@@ -42,18 +42,12 @@ def select_heavy_2():
 
 
 def select_heavy_3():
-    pyautogui.mouseDown(1128, 678)
-    time.sleep(random.uniform(0.09, 0.11))
-    pyautogui.mouseUp(1128, 678)
-
-
-def select_heavy_4():
     pyautogui.mouseDown(1338, 786)
     time.sleep(random.uniform(0.09, 0.11))
     pyautogui.mouseUp(1338, 786)
 
 
-def select_heavy_5():
+def select_heavy_4():
     pyautogui.mouseDown(1548, 906)
     time.sleep(random.uniform(0.09, 0.11))
     pyautogui.mouseUp(1548, 906)
@@ -319,12 +313,13 @@ def check_winbad(
 
 def check_win(
     top_left_x=910,
-    top_left_y=550,
-    bottom_right_x=950,
+    top_left_y=530,
+    bottom_right_x=990,
     bottom_right_y=600,
-    target_color=(203, 170, 108),
-    tolerance=50,
+    target_color=(208, 201, 188),
+    tolerance=10,
 ):
+    
     width = bottom_right_x - top_left_x
     height = bottom_right_y - top_left_y
     time.sleep(0.5)
@@ -342,6 +337,7 @@ def check_win(
             and abs(pixel[1] - target_color[1]) <= tolerance
             and abs(pixel[2] - target_color[2]) <= tolerance
         ):
+            print(f'failed on pixel:{pixel}')
             return False
 
     return True
@@ -351,25 +347,55 @@ def check_turn():
     return pyautogui.pixel(220, 346) == (191, 95, 7)
 
 
+def click_all_front_row():
+    pyautogui.mouseDown(1000, 350)
+    time.sleep(random.uniform(0.09, 0.11))
+    pyautogui.mouseUp(1000, 350)
+    time.sleep(0.1)
+
+    pyautogui.mouseDown(1200, 450)
+    time.sleep(random.uniform(0.09, 0.11))
+    pyautogui.mouseUp(1200, 450)
+    time.sleep(0.3)
+
+    pyautogui.mouseDown(1400, 575)
+    time.sleep(random.uniform(0.09, 0.11))
+    pyautogui.mouseUp(1400, 575)
+    time.sleep(0.3)
+
+    pyautogui.mouseDown(1650, 650)
+    time.sleep(random.uniform(0.09, 0.11))
+    pyautogui.mouseUp(1650, 650)
+    time.sleep(0.3)
+
+    pyautogui.mouseDown(1850, 750)
+    time.sleep(random.uniform(0.09, 0.11))
+    pyautogui.mouseUp(1850, 750)
+    time.sleep(0.3)
+
+
 def turn_loop():
     while not check_turn():
         time.sleep(0.1)
-    select_wimp()
-    select_wimp()
+    
+    # select heavy chem
+    pyautogui.mouseDown(1111, 750)
+    time.sleep(random.uniform(0.09, 0.11))
+    pyautogui.mouseUp(1111, 750)
+    pyautogui.mouseDown(1111, 750)
+    time.sleep(random.uniform(0.09, 0.11))
+    pyautogui.mouseUp(1111, 750)
+
+    # press enemy
     time.sleep(0.3)
     pyautogui.mouseDown(1426, 553)
     time.sleep(random.uniform(0.09, 0.11))
     pyautogui.mouseUp(1426, 553)
-    while not check_turn():
-        time.sleep(0.1)
-    select_saboteur()
-    select_saboteur()
-
-    pyautogui.mouseDown(1800, 700)
-    time.sleep(random.uniform(0.09, 0.11))
-    pyautogui.mouseUp(1800, 700)
 
     time.sleep(1)
+
+    while not check_turn():
+        time.sleep(0.1)
 
     heavy_num = 0
     while True:
@@ -379,36 +405,27 @@ def turn_loop():
             select_heavy_2,
             select_heavy_3,
             select_heavy_4,
-            select_heavy_5,
         ]
-        if check_turn():
-            time.sleep(random.uniform(1, 2))
-            heavy_select_funcs[heavy_num]()
-            pyautogui.mouseDown(1426, 553)
-            time.sleep(random.uniform(0.09, 0.11))
-            pyautogui.mouseUp(1426, 553)
-            heavy_num += 1
-            if heavy_num == 5:
-                heavy_num = 0
+        while not check_turn():
+            time.sleep(0.1)
+
+        heavy_select_funcs[heavy_num]()
+        while check_turn():
+            click_all_front_row()
+        heavy_num += 1
+        if heavy_num == 4:
+            heavy_num = 0
+        
         if check_win():
             break
 
 
 def scroll_right():
-    pyautogui.moveTo(1400, 1356)
-    for i in range(19):
-        pyautogui.scroll(3)
-        time.sleep(0.001)
-
-    time.sleep(1)
-    for i in range(5):
-        pyautogui.click(100, 1360)
-    # pyautogui.click(120,1350) # wall
-    for i in range(23):
-        pyautogui.scroll(-3)
-        time.sleep(0.0001)
-    pyautogui.click(2170, 1352)  # chucker
-    pyautogui.click(1445, 1352)  # bike
+    pyautogui.click(1450, 1350)
+    time.sleep(0.2)
+    for i in range(4):
+        pyautogui.click(2300, 1350)
+    pyautogui.click(2150, 1350)
 
 
 def move_top_wimp():

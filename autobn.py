@@ -352,7 +352,7 @@ def click_all_front_row():
     time.sleep(random.uniform(0.09, 0.11))
     pyautogui.mouseUp(1400, 575)
     time.sleep(0.005)
-
+#
     pyautogui.mouseDown(1650, 650)
     time.sleep(random.uniform(0.09, 0.11))
     pyautogui.mouseUp(1650, 650)

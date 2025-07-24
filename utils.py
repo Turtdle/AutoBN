@@ -9,10 +9,11 @@ def precise_click(location):
     pyautogui.mouseUp(location)
 
 
-def battle_done():
+def battle_done(screenshot=True):
     time.sleep(0.5)
     pyautogui.click(1570, 1031)
-    pyautogui.screenshot("shared_folder/screenshot.png")
+    if screenshot:
+        pyautogui.screenshot("shared_folder/screenshot.png")
     time.sleep(0.5)
     pyautogui.click(1570, 1031)
 
@@ -123,3 +124,45 @@ def check_select():
     hex_color = "ffffff"
     target_rgb = tuple(int(hex_color[i : i + 2], 16) for i in (0, 2, 4))
     return pyautogui.pixel(2422, 900) == target_rgb
+
+
+def scroll_down_fast():
+    for i in range(150):
+        pyautogui.scroll(-10, _pause=False)
+
+
+def scroll_up_fast():
+    for i in range(150):
+        pyautogui.scroll(10, _pause=False)
+
+
+def wait_for_atk_button():
+    hex_color = "73e609"
+    target_rgb = tuple(int(hex_color[i : i + 2], 16) for i in (0, 2, 4))
+    return pyautogui.pixel(2462, 1324) == target_rgb
+
+
+def click_all_front_row():
+    pyautogui.mouseDown(1000, 350)
+    time.sleep(random.uniform(0.009, 0.011))
+    pyautogui.mouseUp(1000, 350)
+    time.sleep(0.005)
+
+    pyautogui.mouseDown(1200, 450)
+    time.sleep(random.uniform(0.009, 0.011))
+    pyautogui.mouseUp(1200, 450)
+    time.sleep(0.005)
+
+    pyautogui.mouseDown(1400, 575)
+    time.sleep(random.uniform(0.009, 0.011))
+    pyautogui.mouseUp(1400, 575)
+    time.sleep(0.005)
+    #
+    pyautogui.mouseDown(1650, 650)
+    time.sleep(random.uniform(0.009, 0.011))
+    pyautogui.mouseUp(1650, 650)
+    time.sleep(0.005)
+
+    pyautogui.mouseDown(1850, 750)
+    time.sleep(random.uniform(0.009, 0.011))
+    pyautogui.mouseUp(1850, 750)

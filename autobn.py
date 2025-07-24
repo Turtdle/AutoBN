@@ -5,10 +5,11 @@ import time
 import random
 import utils
 from utils import precise_click
+import greenborough_loop as gl
 
 BOAR_BADLANDS = (1600, 700)
 BIGFOOT_COUNTRY = (1833, 33)
-GREENBOROUGH = (1254, 1023)
+GREENBOROUGH = (982, 1025)
 
 
 def reset_world_map_zoom():
@@ -64,6 +65,12 @@ def go_to_world_map(place: list):
 
 
 def main_loop():
+    go_to_world_map(GREENBOROUGH)
+    gl.greenborough_loop(20000)
+    while True:
+        if utils.look_for_image("pfp.png"):
+            break
+        time.sleep(1)
     while True:
         go_to_world_map(BIGFOOT_COUNTRY)
         bfl.big_foot_loop()

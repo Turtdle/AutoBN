@@ -311,26 +311,33 @@ def check_winbad(
     return all(pixel == target_color for pixel in pixels)
 
 
-def check_win(top_left_x=1049, top_left_y=784, bottom_right_x=1071, bottom_right_y=819, 
-                          target_color=(165, 161, 149), tolerance=100):
+def check_win(
+    top_left_x=1049,
+    top_left_y=784,
+    bottom_right_x=1071,
+    bottom_right_y=819,
+    target_color=(165, 161, 149),
+    tolerance=100,
+):
     width = bottom_right_x - top_left_x
     height = bottom_right_y - top_left_y
 
     screenshot = pyautogui.screenshot(region=(top_left_x, top_left_y, width, height))
 
-    if screenshot.mode != 'RGB':
-        screenshot = screenshot.convert('RGB')
+    if screenshot.mode != "RGB":
+        screenshot = screenshot.convert("RGB")
 
     pixels = list(screenshot.getdata())
 
     for pixel in pixels:
-        if not (abs(pixel[0] - target_color[0]) <= tolerance and
-                abs(pixel[1] - target_color[1]) <= tolerance and
-                abs(pixel[2] - target_color[2]) <= tolerance):
+        if not (
+            abs(pixel[0] - target_color[0]) <= tolerance
+            and abs(pixel[1] - target_color[1]) <= tolerance
+            and abs(pixel[2] - target_color[2]) <= tolerance
+        ):
             return False
 
     return True
-
 
 
 def check_turn():
@@ -352,7 +359,7 @@ def click_all_front_row():
     time.sleep(random.uniform(0.09, 0.11))
     pyautogui.mouseUp(1400, 575)
     time.sleep(0.005)
-#
+    #
     pyautogui.mouseDown(1650, 650)
     time.sleep(random.uniform(0.09, 0.11))
     pyautogui.mouseUp(1650, 650)
@@ -367,8 +374,8 @@ def click_all_front_row():
 def turn_loop():
     while not check_turn():
         time.sleep(0.1)
-    
-    # mini tank
+
+    # bask
     pyautogui.mouseDown(900, 820)
     time.sleep(random.uniform(0.09, 0.11))
     pyautogui.mouseUp(900, 820)
@@ -412,7 +419,7 @@ def turn_loop():
         ]
         while not check_turn() and not check_win():
             time.sleep(1)
-
+        time.sleep(1)
         heavy_select_funcs[heavy_num]()
         click_all_front_row()
         heavy_num += 1
@@ -427,7 +434,8 @@ def scroll_right():
     time.sleep(0.2)
     for i in range(4):
         pyautogui.click(2300, 1350)
-    pyautogui.click(2150, 1350)
+    pyautogui.click(1300, 1350)
+    pyautogui.click(1600, 1350)
 
 
 def move_top_wimp():

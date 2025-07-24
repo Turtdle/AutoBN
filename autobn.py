@@ -7,8 +7,8 @@ import utils
 from utils import precise_click
 
 BOAR_BADLANDS = (1600, 700)
-
 BIGFOOT_COUNTRY = (1833, 33)
+GREENBOROUGH = (1254, 1023)
 
 
 def reset_world_map_zoom():
@@ -65,9 +65,22 @@ def go_to_world_map(place: list):
 
 def main_loop():
     while True:
+        go_to_world_map(BIGFOOT_COUNTRY)
         bfl.big_foot_loop()
         time.sleep(1)
+
+        while True:
+            if utils.look_for_image("pfp.png"):
+                break
+            time.sleep(1)
+
+        go_to_world_map(BOAR_BADLANDS)
         bbl.boar_badlands_loop()
+
+        while True:
+            if utils.look_for_image("pfp.png"):
+                break
+            time.sleep(1)
 
 
 if __name__ == "__main__":

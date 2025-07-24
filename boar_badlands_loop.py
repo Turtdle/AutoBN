@@ -128,4 +128,8 @@ def boar_badlands_loop():
                 if wait_for_atk_button():
                     break
                 time.sleep(1)
-    utils.precise_click(2094, 1336)
+    while True:
+        if wait_for_atk_button():
+            utils.precise_click((2094, 1336))
+            break
+        time.sleep(0.1)

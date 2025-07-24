@@ -223,7 +223,7 @@ def big_foot_loop():
     counter = 0
     time.sleep(1)
     start_time = time.time()
-    duration = 20 * 60  # 20 minutes in seconds
+    duration = 1 * 60  # 20 minutes in seconds
 
     while time.time() - start_time < duration:
         if wait_for_atk_button():
@@ -245,4 +245,8 @@ def big_foot_loop():
             counter += 1
             if check_for_stop():
                 break
-    utils.precise_click(2094, 1336)
+    while True:
+        if wait_for_atk_button():
+            utils.precise_click((2094, 1336))
+            break
+        time.sleep(0.1)

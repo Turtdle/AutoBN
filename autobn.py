@@ -311,36 +311,26 @@ def check_winbad(
     return all(pixel == target_color for pixel in pixels)
 
 
-def check_win(
-    top_left_x=910,
-    top_left_y=530,
-    bottom_right_x=990,
-    bottom_right_y=600,
-    target_color=(208, 201, 188),
-    tolerance=10,
-):
-    
+def check_win(top_left_x=1049, top_left_y=784, bottom_right_x=1071, bottom_right_y=819, 
+                          target_color=(165, 161, 149), tolerance=100):
     width = bottom_right_x - top_left_x
     height = bottom_right_y - top_left_y
-    time.sleep(0.5)
+
     screenshot = pyautogui.screenshot(region=(top_left_x, top_left_y, width, height))
 
-    if screenshot.mode != "RGB":
-        screenshot = screenshot.convert("RGB")
+    if screenshot.mode != 'RGB':
+        screenshot = screenshot.convert('RGB')
 
     pixels = list(screenshot.getdata())
 
     for pixel in pixels:
-        print(pixel)
-        if not (
-            abs(pixel[0] - target_color[0]) <= tolerance
-            and abs(pixel[1] - target_color[1]) <= tolerance
-            and abs(pixel[2] - target_color[2]) <= tolerance
-        ):
-            print(f'failed on pixel:{pixel}')
+        if not (abs(pixel[0] - target_color[0]) <= tolerance and
+                abs(pixel[1] - target_color[1]) <= tolerance and
+                abs(pixel[2] - target_color[2]) <= tolerance):
             return False
 
     return True
+
 
 
 def check_turn():
@@ -351,33 +341,46 @@ def click_all_front_row():
     pyautogui.mouseDown(1000, 350)
     time.sleep(random.uniform(0.09, 0.11))
     pyautogui.mouseUp(1000, 350)
-    time.sleep(0.1)
+    time.sleep(0.005)
 
     pyautogui.mouseDown(1200, 450)
     time.sleep(random.uniform(0.09, 0.11))
     pyautogui.mouseUp(1200, 450)
-    time.sleep(0.3)
+    time.sleep(0.005)
 
     pyautogui.mouseDown(1400, 575)
     time.sleep(random.uniform(0.09, 0.11))
     pyautogui.mouseUp(1400, 575)
-    time.sleep(0.3)
+    time.sleep(0.005)
 
     pyautogui.mouseDown(1650, 650)
     time.sleep(random.uniform(0.09, 0.11))
     pyautogui.mouseUp(1650, 650)
-    time.sleep(0.3)
+    time.sleep(0.005)
 
     pyautogui.mouseDown(1850, 750)
     time.sleep(random.uniform(0.09, 0.11))
     pyautogui.mouseUp(1850, 750)
-    time.sleep(0.3)
+    time.sleep(0.005)
 
 
 def turn_loop():
     while not check_turn():
         time.sleep(0.1)
     
+    # mini tank
+    pyautogui.mouseDown(900, 820)
+    time.sleep(random.uniform(0.09, 0.11))
+    pyautogui.mouseUp(900, 820)
+    pyautogui.mouseDown(900, 820)
+    time.sleep(random.uniform(0.09, 0.11))
+    pyautogui.mouseUp(900, 820)
+
+    click_all_front_row()
+
+    while not check_turn():
+        time.sleep(0.1)
+
     # select heavy chem
     pyautogui.mouseDown(1111, 750)
     time.sleep(random.uniform(0.09, 0.11))
@@ -399,6 +402,7 @@ def turn_loop():
 
     heavy_num = 0
     while True:
+        time.sleep(1)
         print(pyautogui.pixel(903, 525))
         heavy_select_funcs = [
             select_heavy_1,
@@ -406,16 +410,14 @@ def turn_loop():
             select_heavy_3,
             select_heavy_4,
         ]
-        while not check_turn():
-            time.sleep(0.1)
+        while not check_turn() and not check_win():
+            time.sleep(1)
 
         heavy_select_funcs[heavy_num]()
-        while check_turn():
-            click_all_front_row()
+        click_all_front_row()
         heavy_num += 1
         if heavy_num == 4:
             heavy_num = 0
-        
         if check_win():
             break
 

@@ -66,7 +66,7 @@ def go_to_world_map(place: list):
 
 def main_loop():
     go_to_world_map(GREENBOROUGH)
-    gl.greenborough_loop(20000)
+    gl.greenborough_loop(30)
     while True:
         if utils.look_for_image("pfp.png"):
             break

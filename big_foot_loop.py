@@ -161,6 +161,7 @@ def turn_loop():
 
 
 def scroll_right():
+    pyautogui.moveTo(1450, 1350)
     for i in range(150):
         pyautogui.scroll(-10, _pause=False)
     time.sleep(0.3)
@@ -223,7 +224,7 @@ def big_foot_loop():
     counter = 0
     time.sleep(1)
     start_time = time.time()
-    duration = 1 * 60  # 20 minutes in seconds
+    duration = 20 * 60  # 20 minutes in seconds
 
     while time.time() - start_time < duration:
         if wait_for_atk_button():

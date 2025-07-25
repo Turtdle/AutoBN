@@ -6,6 +6,7 @@ import random
 import utils
 from utils import precise_click
 import greenborough_loop as gl
+import argparse
 
 BOAR_BADLANDS = (1600, 700)
 BIGFOOT_COUNTRY = (1833, 33)
@@ -21,10 +22,8 @@ def reset_world_map_zoom():
 def look_for_go_button_world_map():
     """
     Looks for go button that appears after pressing a location on the world map
-
     Args:
         None
-
     Returns:
         Pixel location or None
     """
@@ -43,10 +42,8 @@ def look_for_go_button_world_map():
 def go_to_world_map(place: list):
     """
     Goes to a place from the world map; world map can be in any state
-
     Args:
         place: tuple of pixel value on map (x,y)
-
     Returns:
         None
     """
@@ -64,26 +61,27 @@ def go_to_world_map(place: list):
         print(f"!!!ERROR IN GO TO {place}")
 
 
-def main_loop():
+def main_loop(greenborough_count):
     go_to_world_map(GREENBOROUGH)
-    gl.greenborough_loop(30)
+    gl.greenborough_loop(greenborough_count)
     while True:
         if utils.look_for_image("pfp.png"):
             break
         time.sleep(1)
     while True:
+        if utils.check_for_stop():
+            utils.remove_stop()
+            break
+
         go_to_world_map(BIGFOOT_COUNTRY)
         bfl.big_foot_loop()
         time.sleep(1)
-
         while True:
             if utils.look_for_image("pfp.png"):
                 break
             time.sleep(1)
-
         go_to_world_map(BOAR_BADLANDS)
         bbl.boar_badlands_loop()
-
         while True:
             if utils.look_for_image("pfp.png"):
                 break
@@ -91,6 +89,16 @@ def main_loop():
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Game automation script")
+    parser.add_argument(
+        "--greenborough-count",
+        type=int,
+        default=30,
+        help="Number of greenborough loops to run (default: 30)",
+    )
+
+    args = parser.parse_args()
+
     # start from world map
     time.sleep(2)
-    main_loop()
+    main_loop(args.greenborough_count)

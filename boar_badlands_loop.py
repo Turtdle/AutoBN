@@ -70,9 +70,11 @@ def boar_badlands_loop():
         print("ERROR IN LOOKING FOR ATK BUTTON IN BOAR BADLANDS")
     print("found atk button")
     done = False
+    done_inner = False
     while not done:
-        done_inner = False
         while not done_inner:
+            if utils.check_for_stop():
+                break
             a = utils.look_for_image("boar_badlands_nose.png")
             if not a:
                 done_inner = True
@@ -99,6 +101,8 @@ def boar_badlands_loop():
                     if wait_for_atk_button():
                         break
                     time.sleep(1)
+        if utils.check_for_stop():
+            break
         for i in range(1500):
             pyautogui.scroll(-10, _pause=False)
         time.sleep(1)

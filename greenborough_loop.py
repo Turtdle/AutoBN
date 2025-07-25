@@ -6,6 +6,8 @@ import utils
 
 def greenborough_loop(amount_of_iron=60):
     for i in range(amount_of_iron // 30):
+        if utils.check_for_stop():
+            break
         print(f"gl run: {i} out of {amount_of_iron // 30}")
         for _i in range(20):
             if utils.wait_for_atk_button():

@@ -18,6 +18,51 @@ def battle_done(screenshot=True):
     pyautogui.click(1570, 1031)
 
 
+def remove_stop():
+    import os
+
+    # Windows path (backslashes) - adjust to match your screenshot folder
+    stop_file_path = "shared_folder\\stop.txt"
+
+    # Alternative: forward slashes also work on Windows
+    # stop_file_path = "shared_folder/stop.txt"
+
+    if os.path.exists(stop_file_path):
+        try:
+            # Delete the stop file so it only triggers once
+            os.remove(stop_file_path)
+            print("Stop signal detected - stop.txt found and removed")
+            return True
+        except Exception as e:
+            print(f"Error removing stop.txt: {e}")
+            return True  # Still signal to stop even if we can't delete
+
+    return False
+
+
+def check_for_stop():
+    """Check if stop.txt file exists, delete it if found, and return True if stopping"""
+    import os
+
+    # Windows path (backslashes) - adjust to match your screenshot folder
+    stop_file_path = "shared_folder\\stop.txt"
+
+    # Alternative: forward slashes also work on Windows
+    # stop_file_path = "shared_folder/stop.txt"
+
+    if os.path.exists(stop_file_path):
+        try:
+            # Delete the stop file so it only triggers once
+            # os.remove(stop_file_path)
+            print("Stop signal detected - stop.txt found and removed")
+            return True
+        except Exception as e:
+            print(f"Error removing stop.txt: {e}")
+            return True  # Still signal to stop even if we can't delete
+
+    return False
+
+
 def check_win(
     top_left_x=1049,
     top_left_y=784,

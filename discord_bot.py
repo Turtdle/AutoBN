@@ -546,10 +546,13 @@ async def stop_command(ctx):
 
 
 @bot.command(name="start")
-async def start_command(ctx):
-    """Start autobn.py using virtual environment Python"""
-    global autobn_process, last_console_message, console_message_id
+async def start_command(ctx, greenborough_count: int = 30):
+    """Start autobn.py using virtual environment Python
 
+    Args:
+        greenborough_count: Number of greenborough loops to run (default: 30)
+    """
+    global autobn_process, last_console_message, console_message_id
     try:
         # Check if process is already running
         if autobn_process and autobn_process.poll() is None:
@@ -565,6 +568,11 @@ async def start_command(ctx):
 
         if not os.path.exists(SCRIPT_NAME):
             await ctx.send(f"❌ Script not found: `{SCRIPT_NAME}`")
+            return
+
+        # Validate greenborough_count
+        if greenborough_count <= 0:
+            await ctx.send("❌ Greenborough count must be a positive number!")
             return
 
         # Reset console tracking
@@ -583,7 +591,7 @@ async def start_command(ctx):
         env["PYTHONUNBUFFERED"] = "1"  # Force Python to be unbuffered
 
         autobn_process = subprocess.Popen(
-            [PYTHON_PATH, SCRIPT_NAME],
+            [PYTHON_PATH, SCRIPT_NAME, "--greenborough-count", str(greenborough_count)],
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,  # Redirect stderr to stdout
             text=True,
@@ -601,8 +609,12 @@ async def start_command(ctx):
         )
         output_thread.start()
 
-        await ctx.send(f"✅ Started {SCRIPT_NAME} (PID: {autobn_process.pid})")
-        print(f"Started {SCRIPT_NAME} with PID: {autobn_process.pid}")
+        await ctx.send(
+            f"✅ Started {SCRIPT_NAME} (PID: {autobn_process.pid}) with greenborough count: {greenborough_count}"
+        )
+        print(
+            f"Started {SCRIPT_NAME} with PID: {autobn_process.pid}, greenborough count: {greenborough_count}"
+        )
 
     except Exception as e:
         await ctx.send(f"❌ Error starting {SCRIPT_NAME}: {e}")

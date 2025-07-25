@@ -2,7 +2,7 @@ import pyautogui
 import time
 import random
 import utils
-from utils import check_win, check_turn, battle_done, check_select
+from utils import check_win, check_turn, battle_done, check_select, check_for_stop
 
 
 def atk():
@@ -197,29 +197,6 @@ def wait_for_atk_button():
     return pyautogui.pixel(2462, 1324) == target_rgb
 
 
-def check_for_stop():
-    """Check if stop.txt file exists, delete it if found, and return True if stopping"""
-    import os
-
-    # Windows path (backslashes) - adjust to match your screenshot folder
-    stop_file_path = "shared_folder\\stop.txt"
-
-    # Alternative: forward slashes also work on Windows
-    # stop_file_path = "shared_folder/stop.txt"
-
-    if os.path.exists(stop_file_path):
-        try:
-            # Delete the stop file so it only triggers once
-            os.remove(stop_file_path)
-            print("Stop signal detected - stop.txt found and removed")
-            return True
-        except Exception as e:
-            print(f"Error removing stop.txt: {e}")
-            return True  # Still signal to stop even if we can't delete
-
-    return False
-
-
 def big_foot_loop():
     counter = 0
     time.sleep(1)
@@ -246,6 +223,7 @@ def big_foot_loop():
             counter += 1
             if check_for_stop():
                 break
+
     while True:
         if wait_for_atk_button():
             utils.precise_click((2094, 1336))

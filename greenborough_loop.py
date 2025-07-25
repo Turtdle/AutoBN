@@ -15,12 +15,12 @@ def greenborough_loop(amount_of_iron=60):
             time.sleep(1)
         else:
             print("REIHJAERIARHEUJHERUOAHEUOJERUAHOHAEOJNHEROAJOJN GERENBOUGHIOGU")
-
-        pyautogui.moveTo(2488, 694)
-        utils.scroll_down_fast()
-        utils.scroll_down_fast()
-        utils.scroll_down_fast()
         time.sleep(1)
+        pyautogui.moveTo(2488, 694)
+        for i in range(5):
+            time.sleep(0.1)
+            utils.scroll_down_fast()
+            time.sleep(0.1)
         utils.precise_click((2460, 1330))
 
         pyautogui.mouseDown(1270, 684)
@@ -63,9 +63,8 @@ def greenborough_loop(amount_of_iron=60):
 
     while True:
         if utils.wait_for_atk_button():
-            utils.precise_click((2094, 1336))
+            utils.retry_until((2094, 1336), lambda: utils.look_for_image("pfp.png"))
             break
-        time.sleep(0.1)
 
 
 if __name__ == "__main__":

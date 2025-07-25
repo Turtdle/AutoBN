@@ -64,28 +64,23 @@ def go_to_world_map(place: list):
 def main_loop(greenborough_count):
     go_to_world_map(GREENBOROUGH)
     gl.greenborough_loop(greenborough_count)
-    while True:
-        if utils.look_for_image("pfp.png"):
-            break
-        time.sleep(1)
+
+    time.sleep(1)
     while True:
         if utils.check_for_stop():
             utils.remove_stop()
             break
 
         go_to_world_map(BIGFOOT_COUNTRY)
-        bfl.big_foot_loop()
-        time.sleep(1)
-        while True:
-            if utils.look_for_image("pfp.png"):
-                break
-            time.sleep(1)
-        go_to_world_map(BOAR_BADLANDS)
+        bfl.big_foot_loop(1)
+        time.sleep(2)
+
+        if not utils.retry_until(
+            lambda: go_to_world_map(BOAR_BADLANDS), utils.wait_for_atk_button
+        ):
+            print("ERROR IN LOOKING FOR ATK BUTTON IN BOAR BADLANDS")
+
         bbl.boar_badlands_loop()
-        while True:
-            if utils.look_for_image("pfp.png"):
-                break
-            time.sleep(1)
 
 
 if __name__ == "__main__":

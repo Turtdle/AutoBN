@@ -1,6 +1,7 @@
 import pyautogui
 import time
 import random
+from typing import Callable, Union, Tuple
 
 
 def precise_click(location):
@@ -60,6 +61,98 @@ def check_for_stop():
             print(f"Error removing stop.txt: {e}")
             return True  # Still signal to stop even if we can't delete
 
+    return False
+
+
+def retry_until(
+    click_input: Union[Callable[[], None], int, Tuple[int, int]],
+    y_or_check: Union[int, Callable[[], bool], None] = None,
+    check_function: Union[Callable[[], bool], None] = None,
+    retry_time: int = 20,
+) -> bool:
+    """
+    Flexible retry function that accepts multiple input formats for clicking
+    Usage patterns:
+        retry_button(lambda: pyautogui.click(100, 200), check_func)
+        retry_button(100, 200, check_func)
+        retry_button((100, 200), check_func)
+    Args:
+        click_input: Lambda function, x coordinate, or (x,y) tuple
+        y_or_check: Y coordinate (if click_input is x) OR check function (if click_input is lambda/tuple)
+        check_function: Check function (only needed if using x,y coordinates)
+        retry_time (int): Total time in seconds to keep retrying (default: 20)
+    Returns:
+        bool: True if check_function eventually returned True, False if timeout
+    """
+    if callable(click_input):
+        click_func = click_input
+        click_description = "lambda function"
+        if callable(y_or_check):
+            check_func = y_or_check
+        else:
+            raise ValueError(
+                "When using lambda, second parameter must be check_function"
+            )
+    elif isinstance(click_input, tuple):
+        x, y = click_input
+        click_description = f"coordinates ({x}, {y})"
+
+        def click_func():
+            precise_click((x, y))
+
+        if callable(y_or_check):
+            check_func = y_or_check
+        else:
+            raise ValueError(
+                "When using tuple, second parameter must be check_function"
+            )
+    elif isinstance(click_input, int):
+        x = click_input
+        if isinstance(y_or_check, int):
+            y = y_or_check
+            click_description = f"coordinates ({x}, {y})"
+
+            def click_func():
+                precise_click((x, y))
+
+            if callable(check_function):
+                check_func = check_function
+            else:
+                raise ValueError(
+                    "When using x,y coordinates, check_function must be provided"
+                )
+        else:
+            raise ValueError(
+                "When providing x coordinate, y coordinate must be provided as second parameter"
+            )
+    else:
+        raise ValueError(
+            "First parameter must be a lambda function, x coordinate (int), or (x,y) tuple"
+        )
+
+    check_name = getattr(check_func, "__name__", "check function")
+    print(f"Retrying click on {click_description} until {check_name} returns True")
+
+    start_time = time.time()
+    attempt = 1
+
+    while time.time() - start_time < retry_time:
+        print(f"Attempt {attempt}: Clicking {click_description}")
+        click_func()
+        time.sleep(0.1)
+
+        if check_func():
+            print(f"Success! {check_name} returned True after {attempt} attempt(s)")
+            return True
+
+        print(f"{check_name} didn't trigger, retrying...")
+        time.sleep(1)
+        attempt += 1
+
+    elapsed_time = time.time() - start_time
+    print(
+        f"Time limit reached ({elapsed_time:.1f}s) for clicking {click_description} until {check_name}"
+    )
     return False
 
 

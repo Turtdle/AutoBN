@@ -31,44 +31,38 @@ def wait_for_atk_button():
 
 
 def turn_loop():
-    for i in range(20):
-        if utils.check_turn():
-            break
-        time.sleep(1)
+    utils.retry_until(
+        lambda: (
+            utils.select_unit_slot(8),
+            time.sleep(0.1),
+            utils.click_generic_middle_enemy(),
+        ),
+        utils.check_turn,
+        45,
+    )
 
-    utils.select_unit_slot(8)
-    time.sleep(0.1)
-    utils.click_generic_middle_enemy()
-
-    print("starting heavy loop")
     while True:
         for i in range(1, 6):
-            print(i)
-            for j in range(20):
-                print(f"waiting for check turn: {j}")
-                if utils.check_turn():
-                    break
-                if utils.check_win():
-                    return
+
+            def _atk():
+                time.sleep(0.5)
+                utils.select_unit_slot(i)
+                time.sleep(0.5)
+                utils.click_generic_middle_enemy()
+
+            def _check():
+                return utils.check_turn() or utils.check_win()
+
+            _atk()
+            while not utils.check_turn() and not utils.check_win():
                 time.sleep(1)
-            else:
-                print("ERROR IN WAITING FOR TURN TO COME IN BOAR LOOP")
-            time.sleep(0.5)
-            print("atking")
-            utils.select_unit_slot(i)
-            print(f"tried to select unit: {i}")
-            time.sleep(0.5)
-            utils.click_generic_middle_enemy()
+            if utils.check_win():
+                return
 
 
 def boar_badlands_loop():
-    for i in range(20):
-        if wait_for_atk_button():
-            break
-        time.sleep(1)
-    else:
-        print("ERROR IN LOOKING FOR ATK BUTTON IN BOAR BADLANDS")
-    print("found atk button")
+    # function assuming atk button is visible in map ui
+
     done = False
     done_inner = False
     while not done:
@@ -79,20 +73,16 @@ def boar_badlands_loop():
             if not a:
                 done_inner = True
             else:
-                print(f"clicking: {a}")
-                utils.precise_click(a)
-
-                for i in range(20):
-                    if utils.check_select():
-                        break
-                    time.sleep(1)
-                else:
+                if not utils.retry_until(
+                    click_input=lambda: utils.precise_click(a),
+                    y_or_check=utils.check_select,
+                    retry_time=20,
+                ):
                     print("ERROR IN WAITING FOR CHECK SELECT IN BB")
 
                 choose_units()
 
-                # press fight button
-                utils.precise_click((2365, 902))
+                utils.retry_until(2365, 902, check_function=utils.check_turn)
 
                 turn_loop()
 
@@ -110,30 +100,30 @@ def boar_badlands_loop():
         if not c:
             done = True
         else:
-            print(f"clicking: {c}")
-            utils.precise_click(c)
-
-            for i in range(20):
-                if utils.check_select():
-                    break
-                time.sleep(1)
-            else:
+            if not utils.retry_until(
+                click_input=lambda: utils.precise_click(a),
+                y_or_check=utils.check_select,
+                retry_time=20,
+            ):
                 print("ERROR IN WAITING FOR CHECK SELECT IN BB")
 
             choose_units()
 
-            # press fight button
-            utils.precise_click((2365, 902))
+            utils.retry_until(2365, 902, check_function=utils.check_turn)
 
             turn_loop()
 
-            utils.battle_done()
-            for k in range(20):
-                if wait_for_atk_button():
-                    break
-                time.sleep(1)
+            utils.retry_until(
+                click_input=utils.battle_done, check_function=wait_for_atk_button
+            )
+
+    # return us safely to main map
     while True:
         if wait_for_atk_button():
-            utils.precise_click((2094, 1336))
+            utils.retry_until((2094, 1336), lambda: utils.look_for_image("pfp.png"))
             break
-        time.sleep(0.1)
+
+
+if __name__ == "__main__":
+    time.sleep(2)
+    boar_badlands_loop()

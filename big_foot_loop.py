@@ -6,11 +6,9 @@ from utils import check_win, check_turn, battle_done, check_select, check_for_st
 
 
 def atk():
-    pyautogui.click(2460, 1330)
-
-
-def green_check():
-    pyautogui.click(1332, 777)
+    utils.precise_click((2460, 1330))
+    time.sleep(random.uniform(0.9, 1.5))
+    utils.precise_click((1332, 777))
 
 
 def baby_raptor():
@@ -141,7 +139,6 @@ def turn_loop():
     heavy_num = 0
     while True:
         time.sleep(1)
-        print(pyautogui.pixel(903, 525))
         heavy_select_funcs = [
             select_heavy_1,
             select_heavy_2,
@@ -197,21 +194,17 @@ def wait_for_atk_button():
     return pyautogui.pixel(2462, 1324) == target_rgb
 
 
-def big_foot_loop():
+def big_foot_loop(duration=45):
     counter = 0
     time.sleep(1)
     start_time = time.time()
-    duration = 20 * 60  # 20 minutes in seconds
+    duration = duration * 60  # 20 minutes in seconds
 
     while time.time() - start_time < duration:
         if wait_for_atk_button():
             print(f"Times run: {counter}")
-            atk()
-            time.sleep(random.uniform(0.9, 1.5))
-            green_check()
 
-            while not check_select():
-                time.sleep(1)
+            utils.retry_until(atk, check_select, 60)
 
             time.sleep(random.uniform(1, 3))
 
@@ -226,6 +219,9 @@ def big_foot_loop():
 
     while True:
         if wait_for_atk_button():
-            utils.precise_click((2094, 1336))
+            utils.retry_until((2094, 1336), lambda: utils.look_for_image("pfp.png"))
             break
-        time.sleep(0.1)
+
+
+if __name__ == "__main__":
+    big_foot_loop(duration=1)

@@ -194,6 +194,54 @@ def wait_for_atk_button():
     return pyautogui.pixel(2462, 1324) == target_rgb
 
 
+def choose_units():
+    # scroll to end
+
+    pyautogui.moveTo(1172, 1357)
+    for i in range(500):
+        pyautogui.scroll(-10, _pause=False)
+
+    time.sleep(1)
+
+    for i in range(20):
+        a = utils.look_for_image("heavy_chem_icon.png")
+        if not a:
+            time.sleep(1)
+        else:
+            break
+
+    print(f"pressing this for heavy chem: {a}")
+    utils.precise_click(pyautogui.center(a))
+
+    for i in range(20):
+        b = utils.look_for_image("super_tank_icon.png")
+        if not b:
+            time.sleep(1)
+        else:
+            break
+
+    for _i in range(4):
+        utils.precise_click(b)
+
+    for i in range(20):
+        c = utils.look_for_image("basilisk_icon.png")
+        if not c:
+            time.sleep(1)
+        else:
+            break
+
+    utils.precise_click(pyautogui.center(c))
+
+    for i in range(20):
+        d = utils.look_for_image("light_chem.png")
+        if not d:
+            time.sleep(1)
+        else:
+            break
+
+    utils.precise_click(d)
+
+
 def big_foot_loop(duration=45):
     counter = 0
     time.sleep(1)
@@ -208,7 +256,7 @@ def big_foot_loop(duration=45):
 
             time.sleep(random.uniform(1, 3))
 
-            scroll_right()
+            choose_units()
 
             fight()
             turn_loop()

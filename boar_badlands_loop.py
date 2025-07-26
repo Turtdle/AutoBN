@@ -50,9 +50,6 @@ def turn_loop():
                 time.sleep(0.5)
                 utils.click_generic_middle_enemy()
 
-            def _check():
-                return utils.check_turn() or utils.check_win()
-
             _atk()
             while not utils.check_turn() and not utils.check_win():
                 time.sleep(1)

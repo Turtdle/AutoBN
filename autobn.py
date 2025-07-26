@@ -72,7 +72,7 @@ def main_loop(greenborough_count):
             break
 
         go_to_world_map(BIGFOOT_COUNTRY)
-        bfl.big_foot_loop(1)
+        bfl.big_foot_loop()
         time.sleep(2)
 
         if not utils.retry_until(

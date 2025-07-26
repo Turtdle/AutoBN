@@ -39,7 +39,8 @@ def greenborough_loop(amount_of_iron=60):
         pyautogui.moveTo(1557, 1342)
 
         utils.scroll_up_fast()
-
+        utils.scroll_up_fast()
+        time.sleep(1)
         g = utils.look_for_image("salamander_icon.png")
         for _i in range(3):
             pyautogui.mouseDown(g)

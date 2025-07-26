@@ -98,7 +98,7 @@ def boar_badlands_loop():
             done = True
         else:
             if not utils.retry_until(
-                click_input=lambda: utils.precise_click(a),
+                click_input=lambda: utils.precise_click(c),
                 y_or_check=utils.check_select,
                 retry_time=20,
             ):

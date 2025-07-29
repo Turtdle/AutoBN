@@ -110,9 +110,11 @@ def boar_badlands_loop():
 
             turn_loop()
 
-            utils.retry_until(
-                click_input=utils.battle_done, check_function=wait_for_atk_button
-            )
+            utils.battle_done()
+            for k in range(20):
+                if wait_for_atk_button():
+                    break
+                time.sleep(1)
 
     # return us safely to main map
     while True:

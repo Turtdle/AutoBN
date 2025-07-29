@@ -25,6 +25,9 @@ def trooper():
 
 def fight():
     pyautogui.click(2380, 900)
+    time.sleep(0.1)
+    pyautogui.click(2380, 900)
+    pyautogui.click(2380, 900)
 
 
 def select_heavy_1():
@@ -251,8 +254,10 @@ def big_foot_loop(duration=45):
     while time.time() - start_time < duration:
         if wait_for_atk_button():
             print(f"Times run: {counter}")
-
-            utils.retry_until(atk, check_select, 60)
+            atk()
+            while not check_select():
+                time.sleep(1)
+            #utils.retry_until(atk, check_select, 60)
 
             time.sleep(random.uniform(1, 3))
 

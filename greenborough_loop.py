@@ -50,6 +50,8 @@ def greenborough_loop(amount_of_iron=60):
         utils.precise_click((2365, 902))
         s = 0
         while True:
+            # hit atk during turn loop???
+            utils.precise_click((2365, 902))
             s += 1
             utils.select_unit_slot((s % 3) + 2)
             time.sleep(0.1)

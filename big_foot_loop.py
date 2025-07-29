@@ -78,27 +78,27 @@ def select_field_agent():
 
 def click_all_front_row():
     pyautogui.mouseDown(1000, 350)
-    time.sleep(random.uniform(0.09, 0.11))
+    time.sleep(random.uniform(0.009, 0.011))
     pyautogui.mouseUp(1000, 350)
     time.sleep(0.005)
 
     pyautogui.mouseDown(1200, 450)
-    time.sleep(random.uniform(0.09, 0.11))
+    time.sleep(random.uniform(0.009, 0.011))
     pyautogui.mouseUp(1200, 450)
     time.sleep(0.005)
 
     pyautogui.mouseDown(1400, 575)
-    time.sleep(random.uniform(0.09, 0.11))
+    time.sleep(random.uniform(0.009, 0.011))
     pyautogui.mouseUp(1400, 575)
     time.sleep(0.005)
     #
     pyautogui.mouseDown(1650, 650)
-    time.sleep(random.uniform(0.09, 0.11))
+    time.sleep(random.uniform(0.009, 0.011))
     pyautogui.mouseUp(1650, 650)
     time.sleep(0.005)
 
     pyautogui.mouseDown(1850, 750)
-    time.sleep(random.uniform(0.09, 0.11))
+    time.sleep(random.uniform(0.009, 0.011))
     pyautogui.mouseUp(1850, 750)
     time.sleep(0.005)
 
@@ -106,58 +106,43 @@ def click_all_front_row():
 def turn_loop():
     while not check_turn():
         time.sleep(0.1)
+    time.sleep(1)
+    utils.retry_until(
+        lambda: (
+            utils.select_unit_slot(8),
+            time.sleep(0.1),
+            click_all_front_row(),
+        ),
+        utils.check_turn,
+        45,
+    )
 
-    # bask
-    pyautogui.mouseDown(900, 820)
-    time.sleep(random.uniform(0.09, 0.11))
-    pyautogui.mouseUp(900, 820)
-    pyautogui.mouseDown(900, 820)
-    time.sleep(random.uniform(0.09, 0.11))
-    pyautogui.mouseUp(900, 820)
-
-    click_all_front_row()
-
-    while not check_turn():
-        time.sleep(0.1)
-
-    # select heavy chem
-    pyautogui.mouseDown(1111, 750)
-    time.sleep(random.uniform(0.09, 0.11))
-    pyautogui.mouseUp(1111, 750)
-    pyautogui.mouseDown(1111, 750)
-    time.sleep(random.uniform(0.09, 0.11))
-    pyautogui.mouseUp(1111, 750)
-
-    # press enemy
-    time.sleep(0.3)
-    pyautogui.mouseDown(1426, 553)
-    time.sleep(random.uniform(0.09, 0.11))
-    pyautogui.mouseUp(1426, 553)
+    utils.retry_until(
+        lambda: (
+            utils.select_unit_slot(9),
+            time.sleep(0.1),
+            click_all_front_row(),
+        ),
+        utils.check_turn,
+        45,
+    )
 
     time.sleep(1)
 
-    while not check_turn():
-        time.sleep(0.1)
-
-    heavy_num = 0
     while True:
-        time.sleep(1)
-        heavy_select_funcs = [
-            select_heavy_1,
-            select_heavy_2,
-            select_heavy_3,
-            select_heavy_4,
-        ]
-        while not check_turn() and not check_win():
-            time.sleep(1)
-        time.sleep(1)
-        heavy_select_funcs[heavy_num]()
-        click_all_front_row()
-        heavy_num += 1
-        if heavy_num == 4:
-            heavy_num = 0
-        if check_win():
-            break
+        for i in range(1, 6):
+
+            def _atk():
+                time.sleep(0.5)
+                utils.select_unit_slot(i)
+                time.sleep(0.5)
+                click_all_front_row()
+
+            _atk()
+            while not utils.check_turn() and not utils.check_win():
+                time.sleep(1)
+            if utils.check_win():
+                return
 
 
 def scroll_right():
@@ -198,6 +183,11 @@ def wait_for_atk_button():
 
 
 def choose_units():
+    # press vehicles
+    utils.precise_click((2343, 1243))
+    time.sleep(0.1)
+    utils.precise_click((2345, 1053))
+
     # scroll to end
 
     pyautogui.moveTo(1172, 1357)
@@ -207,33 +197,14 @@ def choose_units():
     time.sleep(1)
 
     for i in range(20):
-        a = utils.look_for_image("heavy_chem_icon.png")
-        if not a:
-            time.sleep(1)
-        else:
-            break
-
-    print(f"pressing this for heavy chem: {a}")
-    utils.precise_click(pyautogui.center(a))
-
-    for i in range(20):
         b = utils.look_for_image("super_tank_icon.png")
         if not b:
             time.sleep(1)
         else:
             break
 
-    for _i in range(4):
+    for _i in range(5):
         utils.precise_click(b)
-
-    for i in range(20):
-        c = utils.look_for_image("basilisk_icon.png")
-        if not c:
-            time.sleep(1)
-        else:
-            break
-
-    utils.precise_click(pyautogui.center(c))
 
     for i in range(20):
         d = utils.look_for_image("light_chem.png")
@@ -243,6 +214,14 @@ def choose_units():
             break
 
     utils.precise_click(d)
+
+    time.sleep(0.1)
+
+    utils.scroll_up_fast()
+
+    time.sleep(0.1)
+
+    utils.precise_click((421, 1349))
 
 
 def big_foot_loop(duration=45):
@@ -257,7 +236,7 @@ def big_foot_loop(duration=45):
             atk()
             while not check_select():
                 time.sleep(1)
-            #utils.retry_until(atk, check_select, 60)
+            # utils.retry_until(atk, check_select, 60)
 
             time.sleep(random.uniform(1, 3))
 

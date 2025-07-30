@@ -15,12 +15,12 @@ def choose_units():
     for i in range(150):
         pyautogui.scroll(-10, _pause=False)
     a = utils.look_for_image("heavy_icon.png")
-
+    time.sleep(1)
     for i in range(5):
         utils.precise_click(a)
 
     b = utils.look_for_image("lightning_dragoon_icon.png")
-
+    time.sleep(1)
     utils.precise_click(b)
 
 

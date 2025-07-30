@@ -202,7 +202,7 @@ def choose_units():
             time.sleep(1)
         else:
             break
-
+    time.sleep(0.1)
     for _i in range(5):
         utils.precise_click(b)
 

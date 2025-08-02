@@ -1,10 +1,100 @@
 import pyautogui
 import time
 import random
-from typing import Callable, Union, Tuple
+from typing import Callable, Union, Tuple, Literal
+from PIL import Image, ImageDraw
+import numpy as np
+
+DIAMOND_COORDS = [
+    {
+        "top": (1022, 264),
+        "left": (815, 367),
+        "right": (1229, 367),
+        "bottom": (1022, 471),
+    },
+    {
+        "top": (1229, 368),
+        "left": (1022, 471),
+        "right": (1436, 471),
+        "bottom": (1229, 575),
+    },
+    {
+        "top": (1436, 472),
+        "left": (1229, 575),
+        "right": (1643, 575),
+        "bottom": (1436, 679),
+    },
+    {
+        "top": (1643, 576),
+        "left": (1436, 679),
+        "right": (1850, 679),
+        "bottom": (1643, 783),
+    },
+    {
+        "top": (1850, 680),
+        "left": (1643, 783),
+        "right": (2057, 783),
+        "bottom": (1850, 887),
+    },
+    {
+        "top": (1228, 160),
+        "left": (1021, 263),
+        "right": (1435, 263),
+        "bottom": (1228, 367),
+    },
+    {
+        "top": (1436, 264),
+        "left": (1229, 367),
+        "right": (1643, 367),
+        "bottom": (1436, 471),
+    },
+    {
+        "top": (1643, 368),
+        "left": (1436, 471),
+        "right": (1850, 471),
+        "bottom": (1643, 575),
+    },
+    {
+        "top": (1850, 472),
+        "left": (1643, 575),
+        "right": (2057, 575),
+        "bottom": (1850, 679),
+    },
+    {
+        "top": (2057, 576),
+        "left": (1850, 679),
+        "right": (2264, 679),
+        "bottom": (2057, 783),
+    },
+    {
+        "top": (1642, 160),
+        "left": (1435, 263),
+        "right": (1849, 263),
+        "bottom": (1642, 367),
+    },
+    {
+        "top": (1849, 264),
+        "left": (1642, 367),
+        "right": (2056, 367),
+        "bottom": (1849, 471),
+    },
+    {
+        "top": (2056, 368),
+        "left": (1849, 471),
+        "right": (2263, 471),
+        "bottom": (2056, 575),
+    },
+]
 
 
-def precise_click(location):
+def precise_click(*args):
+    if len(args) == 1:
+        location = args[0]
+    elif len(args) == 2:
+        location = args
+    else:
+        raise ValueError("Pass either a tuple (x, y) or two separate coordinates x, y")
+
     pyautogui.mouseDown(location)
     time.sleep(random.uniform(0.09, 0.11))
     pyautogui.mouseUp(location)
@@ -210,11 +300,28 @@ def look_for_image(image_name: str, _confidence=0.8):
         return None
 
 
+def look_for_image_with_wait(image_name: str, _confidence=0.8, wait=20):
+    """
+    Looks for a image on screen
+    Args:
+        image_name : str of image name icluding file extension
+
+    Returns:
+        Pixel location or None
+    """
+    for _i in range(wait):
+        a = look_for_image(image_name=image_name, _confidence=0.8)
+        if not a:
+            time.sleep(1)
+        else:
+            return a
+
+
 def click_generic_middle_enemy():
     precise_click((1400, 575))
 
 
-def select_unit_slot(slot: int):
+def select_unit_slot(slot: int, return_coords=False):
     """
     selects a unit on grid:
 
@@ -255,7 +362,11 @@ def select_unit_slot(slot: int):
         loc = (683, 931)
     if slot == 13:
         loc = (900, 1044)
-    precise_click(loc)
+    if return_coords:
+        return loc
+    else:
+        precise_click(loc)
+        return None
 
 
 def check_select():
@@ -304,3 +415,170 @@ def click_all_front_row():
     pyautogui.mouseDown(1850, 750)
     time.sleep(random.uniform(0.009, 0.011))
     pyautogui.mouseUp(1850, 750)
+
+
+def select_ability(ability_number: Literal[1, 2, 3]):
+    if ability_number == 1:
+        precise_click(564, 1335)
+    elif ability_number == 2:
+        precise_click(750, 1335)
+    elif ability_number == 3:
+        precise_click(950, 1335)
+    else:
+        raise ValueError
+
+
+def diamond_screenshot(
+    top_x, top_y, left_x, left_y, right_x, right_y, bottom_x, bottom_y
+):
+    # Calculate bounding box for the diamond
+    min_x = min(top_x, left_x, right_x, bottom_x)
+    max_x = max(top_x, left_x, right_x, bottom_x)
+    min_y = min(top_y, left_y, right_y, bottom_y)
+    max_y = max(top_y, left_y, right_y, bottom_y)
+    width = max_x - min_x
+    height = max_y - min_y
+
+    # Take rectangular screenshot of the bounding area
+    screenshot = pyautogui.screenshot(region=(min_x, min_y, width, height))
+    screenshot = screenshot.convert("RGB")
+
+    # Create diamond mask
+    mask = Image.new("L", (width, height), 0)
+    draw = ImageDraw.Draw(mask)
+
+    # Convert absolute coordinates to relative coordinates within the bounding box
+    diamond_points = [
+        (top_x - min_x, top_y - min_y),  # top
+        (right_x - min_x, right_y - min_y),  # right
+        (bottom_x - min_x, bottom_y - min_y),  # bottom
+        (left_x - min_x, left_y - min_y),  # left
+    ]
+
+    # Draw diamond shape
+    draw.polygon(diamond_points, fill=255)
+
+    # Apply mask to screenshot
+    screenshot.putalpha(mask)
+
+    # Convert back to RGB (removes alpha channel, sets transparent areas to white)
+    rgb_screenshot = Image.new("RGB", screenshot.size, (255, 255, 255))
+    rgb_screenshot.paste(
+        screenshot, mask=screenshot.split()[-1] if screenshot.mode == "RGBA" else None
+    )
+
+    return rgb_screenshot
+
+
+def get_diamond_mask(coords, width, height, min_x, min_y):
+    """Create a mask for the diamond shape"""
+    mask = Image.new("L", (width, height), 0)
+    draw = ImageDraw.Draw(mask)
+
+    diamond_points = [
+        (coords["top"][0] - min_x, coords["top"][1] - min_y),
+        (coords["right"][0] - min_x, coords["right"][1] - min_y),
+        (coords["bottom"][0] - min_x, coords["bottom"][1] - min_y),
+        (coords["left"][0] - min_x, coords["left"][1] - min_y),
+    ]
+
+    draw.polygon(diamond_points, fill=255)
+    return mask
+
+
+def calculate_diamond_average_color(diamond_img, coords):
+    """Calculate average color of only the diamond pixels"""
+    # Get bounding box dimensions
+    min_x = min(
+        coords["top"][0], coords["left"][0], coords["right"][0], coords["bottom"][0]
+    )
+    max_x = max(
+        coords["top"][0], coords["left"][0], coords["right"][0], coords["bottom"][0]
+    )
+    min_y = min(
+        coords["top"][1], coords["left"][1], coords["right"][1], coords["bottom"][1]
+    )
+    max_y = max(
+        coords["top"][1], coords["left"][1], coords["right"][1], coords["bottom"][1]
+    )
+
+    width = max_x - min_x
+    height = max_y - min_y
+
+    # Create mask and get diamond pixels only
+    mask = get_diamond_mask(coords, width, height, min_x, min_y)
+    img_array = np.array(diamond_img)
+    mask_array = np.array(mask)
+
+    diamond_pixels = img_array[mask_array > 0]
+    return np.mean(diamond_pixels, axis=0)
+
+
+def select_enemy_slot(slot: int, return_coords=False):
+    """
+    selects a enemy on grid:
+
+     11 12 13
+    6 7 8 9 10
+    1 2 3 4 5
+
+
+
+    param: slot
+        num 1-13
+
+    return:
+        None
+    """
+    loc = None
+    if slot == 1:
+        loc = (1034, 358)
+    if slot == 2:
+        loc = (1225, 454)
+    if slot == 3:
+        loc = (1433, 569)
+    if slot == 4:
+        loc = (1645, 677)
+    if slot == 5:
+        loc = (1854, 774)
+    if slot == 6:
+        loc = (1234, 255)
+    if slot == 7:
+        loc = (1431, 362)
+    if slot == 8:
+        loc = (1637, 460)
+    if slot == 9:
+        loc = (1834, 570)
+    if slot == 10:
+        loc = (2051, 675)
+    if slot == 11:
+        loc = (1660, 261)
+    if slot == 12:
+        loc = (1855, 361)
+    if slot == 13:
+        loc = (2031, 476)
+    if return_coords:
+        return loc
+    else:
+        precise_click(loc)
+        return None
+
+
+def click_drag(*args):
+    if len(args) == 4:
+        # 4 separate coordinates: start_x, start_y, end_x, end_y
+        start_x, start_y, end_x, end_y = args
+    elif len(args) == 2:
+        # 2 tuples: (start_x, start_y), (end_x, end_y)
+        (start_x, start_y), (end_x, end_y) = args
+    else:
+        raise ValueError("Pass either 4 coordinates or 2 tuples")
+
+    pyautogui.moveTo(start_x, start_y, duration=0.1)
+    pyautogui.mouseDown()
+    pyautogui.moveTo(end_x, end_y, duration=0.2)
+    pyautogui.mouseUp()
+
+
+def check_win2():
+    return look_for_image("victory.png")

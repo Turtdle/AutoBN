@@ -571,7 +571,7 @@ async def start_command(ctx, greenborough_count: int = 30):
             return
 
         # Validate greenborough_count
-        if greenborough_count <= 0:
+        if greenborough_count <= -1:
             await ctx.send("❌ Greenborough count must be a positive number!")
             return
 

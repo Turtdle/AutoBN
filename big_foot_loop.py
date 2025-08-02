@@ -206,21 +206,13 @@ def choose_units():
     for _i in range(5):
         utils.precise_click(b)
 
-    for i in range(20):
-        d = utils.look_for_image("light_chem.png")
-        if not d:
-            time.sleep(1)
-        else:
-            break
-
-    utils.precise_click(d)
-
     time.sleep(0.1)
 
     utils.scroll_up_fast()
 
     time.sleep(0.1)
-
+    utils.precise_click((1540, 1350))
+    time.sleep(0.1)
     utils.precise_click((421, 1349))
 
 

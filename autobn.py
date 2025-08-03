@@ -130,4 +130,4 @@ if __name__ == "__main__":
 
     # start from world map
     time.sleep(2)
-    main_loop(args.greenborough_count, args.nav_loop)
+    main_loop(args.greenborough_count, args.navy_loop)

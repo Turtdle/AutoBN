@@ -596,6 +596,7 @@ async def start_command(ctx, greenborough_count: int = 30, navy_loop: int = 0):
                 SCRIPT_NAME,
                 "--greenborough-count",
                 str(greenborough_count),
+                "--navy-loop",
                 str(navy_loop),
             ],
             stdout=subprocess.PIPE,

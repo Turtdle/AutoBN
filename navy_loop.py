@@ -88,7 +88,7 @@ def turn_loop(m10s):
             last_used += 1
 
 
-def find_enemies(in_battle=False, debug=False):
+def find_enemies(in_battle=False, debug=True):
     if in_battle:
         for i in range(5):
             pyautogui.click(2453, 1229)
@@ -106,7 +106,15 @@ def find_enemies(in_battle=False, debug=False):
         avg_color = utils.calculate_diamond_average_color(diamond_img, coords)
         if debug:
             print(f"i: {i}, {avg_color}")
-        if (avg_color[0] > 20 or avg_color[2] < 120) and avg_color[2] < 150:
+        if (
+            ((avg_color[0] > 26 or avg_color[2] < 118) and avg_color[2] < 150)
+            or (avg_color[0] > 30 and avg_color[1] < 120 and avg_color[2] < 160)
+            or is_within_cumulative_error(
+                avg_color, [24.12837367, 114.5045292, 152.0923956], 15
+            )
+        ) and not is_within_cumulative_error(
+            avg_color, [25.52301761, 120.63299577, 158.20207182], 5
+        ):
             marked_positions.add(i)
     pattern = [
         [10, 11, 12],
@@ -168,14 +176,14 @@ def find_target():
     pyautogui.moveTo(2390, 637)
     for i in range(5):
         utils.scroll_down_fast()
-    for i in range(5):
+    for i in range(6):
         a = utils.look_for_image(f"navy{i + 1}.png", _confidence=0.7)
         if a:
             return a
     pyautogui.moveTo(100, 637)
     for i in range(5):
         utils.scroll_down_fast()
-    for i in range(5):
+    for i in range(6):
         a = utils.look_for_image(f"navy{i + 1}.png", _confidence=0.7)
         if a:
             return a
@@ -224,6 +232,19 @@ def navy_loop():
             break
 
 
+def is_within_cumulative_error(reference, test_array, max_error):
+    reference = np.array(reference)
+    test_array = np.array(test_array)
+
+    # Calculate absolute differences
+    differences = np.abs(reference - test_array)
+
+    # Sum up all the errors (cumulative)
+    cumulative_error = np.sum(differences)
+
+    return cumulative_error <= max_error
+
+
 if __name__ == "__main__":
-    navy_loop()
-    # find_enemies(True, True)
+    # navy_loop()
+    find_enemies(True, True)

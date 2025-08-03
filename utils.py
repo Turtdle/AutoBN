@@ -296,7 +296,7 @@ def look_for_image(image_name: str, _confidence=0.8):
             print(f"Found at: {location}")
             return location
     except pyautogui.ImageNotFoundException:
-        print("Image not found on screen")
+        # print("Image not found on screen")
         return None
 
 

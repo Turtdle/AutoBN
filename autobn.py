@@ -72,7 +72,7 @@ def go_to_world_map(place: list, left=False):
         print(f"!!!ERROR IN GO TO {place}")
 
 
-def main_loop(greenborough_count):
+def main_loop(greenborough_count, navy_loop):
     if greenborough_count > 0:
         go_to_world_map(GREENBOROUGH)
         gl.greenborough_loop(greenborough_count)
@@ -93,17 +93,20 @@ def main_loop(greenborough_count):
             time.sleep(2)
             return utils.look_for_image("pfp.png")
 
-        pyautogui.moveTo(2400, 600)
-        for i in range(5):
-            utils.scroll_down_fast()
-        if not utils.retry_until(lambda: go_to_world_map(OCEAN, True), simple_delay):
-            print("ERROR IN LOOKING FOR ATK BUTTON IN BOAR BADLANDS")
+        if navy_loop == 1:
+            pyautogui.moveTo(2400, 600)
+            for i in range(5):
+                utils.scroll_down_fast()
+            if not utils.retry_until(
+                lambda: go_to_world_map(OCEAN, True), simple_delay
+            ):
+                print("ERROR IN LOOKING FOR ATK BUTTON IN BOAR BADLANDS")
 
-        nl.navy_loop()
-        if not utils.retry_until(
-            lambda: go_to_world_map(BIGFOOT_COUNTRY), utils.wait_for_atk_button
-        ):
-            print("ERROR IN LOOKING FOR ATK BUTTON IN BOAR BADLANDS")
+            nl.navy_loop()
+            if not utils.retry_until(
+                lambda: go_to_world_map(BIGFOOT_COUNTRY), utils.wait_for_atk_button
+            ):
+                print("ERROR IN LOOKING FOR ATK BUTTON IN BOAR BADLANDS")
         bfl.big_foot_loop()
         time.sleep(2)
 
@@ -116,9 +119,15 @@ if __name__ == "__main__":
         default=0,
         help="Number of greenborough loops to run (default: 30)",
     )
+    parser.add_argument(
+        "--navy-loop",
+        type=int,
+        default=0,
+        help="Navy-loop?",
+    )
 
     args = parser.parse_args()
 
     # start from world map
     time.sleep(2)
-    main_loop(args.greenborough_count)
+    main_loop(args.greenborough_count, args.nav_loop)

@@ -546,7 +546,7 @@ async def stop_command(ctx):
 
 
 @bot.command(name="start")
-async def start_command(ctx, greenborough_count: int = 30):
+async def start_command(ctx, greenborough_count: int = 30, navy_loop: int = 0):
     """Start autobn.py using virtual environment Python
 
     Args:
@@ -591,7 +591,13 @@ async def start_command(ctx, greenborough_count: int = 30):
         env["PYTHONUNBUFFERED"] = "1"  # Force Python to be unbuffered
 
         autobn_process = subprocess.Popen(
-            [PYTHON_PATH, SCRIPT_NAME, "--greenborough-count", str(greenborough_count)],
+            [
+                PYTHON_PATH,
+                SCRIPT_NAME,
+                "--greenborough-count",
+                str(greenborough_count),
+                str(navy_loop),
+            ],
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,  # Redirect stderr to stdout
             text=True,
@@ -610,7 +616,7 @@ async def start_command(ctx, greenborough_count: int = 30):
         output_thread.start()
 
         await ctx.send(
-            f"✅ Started {SCRIPT_NAME} (PID: {autobn_process.pid}) with greenborough count: {greenborough_count}"
+            f"✅ Started {SCRIPT_NAME} (PID: {autobn_process.pid}) with greenborough count: {greenborough_count} and navy_loop: {navy_loop}"
         )
         print(
             f"Started {SCRIPT_NAME} with PID: {autobn_process.pid}, greenborough count: {greenborough_count}"

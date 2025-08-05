@@ -103,10 +103,10 @@ def main_loop(greenborough_count, navy_loop):
                 print("ERROR IN LOOKING FOR ATK BUTTON IN BOAR BADLANDS")
 
             nl.navy_loop()
-            if not utils.retry_until(
-                lambda: go_to_world_map(BIGFOOT_COUNTRY), utils.wait_for_atk_button
-            ):
-                print("ERROR IN LOOKING FOR ATK BUTTON IN BOAR BADLANDS")
+        if not utils.retry_until(
+            lambda: go_to_world_map(BIGFOOT_COUNTRY), utils.wait_for_atk_button
+        ):
+            print("ERROR IN LOOKING FOR ATK BUTTON IN BOAR BADLANDS")
         bfl.big_foot_loop()
         time.sleep(2)
 

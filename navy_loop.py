@@ -107,20 +107,35 @@ def find_enemies(in_battle=False, debug=True):
         if debug:
             print(f"i: {i}, {avg_color}")
         if (
-            ((avg_color[0] > 26 or avg_color[2] < 118) and avg_color[2] < 150)
-            or (avg_color[0] > 30 and avg_color[1] < 120 and avg_color[2] < 160)
-            or is_within_cumulative_error(
-                avg_color, [24.12837367, 114.5045292, 152.0923956], 15
+            (
+                ((avg_color[0] > 26 or avg_color[2] < 118) and avg_color[2] < 150)
+                or (avg_color[0] > 30 and avg_color[1] < 120 and avg_color[2] < 160)
+                or is_within_cumulative_error(
+                    avg_color, [24.12837367, 114.5045292, 152.0923956], 15
+                )
             )
-        ) and not is_within_cumulative_error(
-            avg_color, [25.52301761, 120.63299577, 158.20207182], 5
-        )and not is_within_cumulative_error(
-            avg_color,  [ 23.25742091 ,116.05191155, 144.33469596], 5)and not is_within_cumulative_error(
-            avg_color,  [ 27.32415107 ,103.63531844, 132.34965392], 5)and not is_within_cumulative_error(
-            avg_color,  [ 21.79360803, 114.42641799, 141.41564082], 5)and not is_within_cumulative_error(
-            avg_color,  [ 29.64370326, 127.43498862 ,149.52517768], 5)and not is_within_cumulative_error(
-            avg_color,  [ 33.78441028, 123.95366284 ,146.34027036], 5)and not is_within_cumulative_error(
-            avg_color,   [ 21.66783574, 121.51368049 ,150.20365123], 5):
+            and not is_within_cumulative_error(
+                avg_color, [25.52301761, 120.63299577, 158.20207182], 5
+            )
+            and not is_within_cumulative_error(
+                avg_color, [23.25742091, 116.05191155, 144.33469596], 5
+            )
+            and not is_within_cumulative_error(
+                avg_color, [27.32415107, 103.63531844, 132.34965392], 5
+            )
+            and not is_within_cumulative_error(
+                avg_color, [21.79360803, 114.42641799, 141.41564082], 5
+            )
+            and not is_within_cumulative_error(
+                avg_color, [29.64370326, 127.43498862, 149.52517768], 5
+            )
+            and not is_within_cumulative_error(
+                avg_color, [33.78441028, 123.95366284, 146.34027036], 5
+            )
+            and not is_within_cumulative_error(
+                avg_color, [21.66783574, 121.51368049, 150.20365123], 5
+            )
+        ):
             marked_positions.add(i)
     pattern = [
         [10, 11, 12],

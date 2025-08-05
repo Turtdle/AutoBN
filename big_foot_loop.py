@@ -107,12 +107,10 @@ def turn_loop():
     while not check_turn():
         time.sleep(0.1)
     time.sleep(1)
+    utils.select_unit_slot(8)
+    click_all_front_row()
     utils.retry_until(
-        lambda: (
-            utils.select_unit_slot(8),
-            time.sleep(0.1),
-            click_all_front_row(),
-        ),
+        lambda: (time.sleep(0.1)),
         utils.check_turn,
         45,
     )
@@ -211,9 +209,9 @@ def choose_units():
     utils.scroll_up_fast()
 
     time.sleep(0.1)
-    utils.precise_click((1540, 1350))
+    utils.precise_click((2404, 1356))
     time.sleep(0.1)
-    utils.precise_click((421, 1349))
+    utils.precise_click((1135, 1356))
 
 
 def big_foot_loop(duration=45):

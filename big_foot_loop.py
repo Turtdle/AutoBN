@@ -211,7 +211,7 @@ def choose_units():
     time.sleep(0.1)
     utils.precise_click((2404, 1356))
     time.sleep(0.1)
-    utils.precise_click((1135, 1356))
+    utils.precise_click((1300, 1356))
 
 
 def big_foot_loop(duration=45):

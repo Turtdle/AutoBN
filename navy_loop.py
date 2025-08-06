@@ -112,8 +112,9 @@ def find_enemies(in_battle=False, debug=True):
                 or (avg_color[0] > 30 and avg_color[1] < 120 and avg_color[2] < 160)
                 or is_within_cumulative_error(
                     avg_color, [24.12837367, 114.5045292, 152.0923956], 15
-                )or is_within_cumulative_error(
-                    avg_color, [ 25.53070563, 109.60026943, 143.23328843], 15
+                )
+                or is_within_cumulative_error(
+                    avg_color, [25.53070563, 109.60026943, 143.23328843], 15
                 )
             )
             and not is_within_cumulative_error(
@@ -138,7 +139,7 @@ def find_enemies(in_battle=False, debug=True):
                 avg_color, [21.66783574, 121.51368049, 150.20365123], 5
             )
             and not is_within_cumulative_error(
-                avg_color, [ 36.16764993, 108.90414363 ,130.9898035 ], 5
+                avg_color, [36.16764993, 108.90414363, 130.9898035], 5
             )
         ):
             marked_positions.add(i)

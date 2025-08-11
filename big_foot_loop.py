@@ -117,7 +117,7 @@ def turn_loop():
 
     utils.retry_until(
         lambda: (
-            utils.select_unit_slot(9),
+            utils.select_unit_slot(12),
             time.sleep(0.1),
             click_all_front_row(),
         ),
@@ -218,7 +218,7 @@ def choose_units():
         pyautogui.scroll(-10, _pause=False)
     time.sleep(0.1)
     utils.precise_click((310, 1356))
-    utils.precise_click((888, 1356))
+    utils.precise_click((1177, 1356))
 
 
 def big_foot_loop(duration=45):

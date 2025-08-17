@@ -205,7 +205,7 @@ def choose_units():
         utils.precise_click(b)
 
     time.sleep(0.1)
-    utils.precise_click((1893, 1053))
+    utils.precise_click((1893, 1356))
     time.sleep(0.1)
     utils.scroll_up_fast()
 

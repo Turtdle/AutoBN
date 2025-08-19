@@ -201,11 +201,14 @@ def choose_units():
         else:
             break
     time.sleep(0.1)
-    for _i in range(5):
+    utils.precise_click((1893, 1356))
+    time.sleep(0.1)
+    for _i in range(4):
         utils.precise_click(b)
 
-    time.sleep(0.1)
-    utils.precise_click((1893, 1356))
+    utils.precise_click((2050, 1356))
+    
+    """
     time.sleep(0.1)
     utils.scroll_up_fast()
 
@@ -218,7 +221,7 @@ def choose_units():
     for i in range(500):
         pyautogui.scroll(-10, _pause=False)
     time.sleep(0.1)
-
+    """
     utils.precise_click((1000, 1356))
 
 

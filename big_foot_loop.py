@@ -117,7 +117,7 @@ def turn_loop():
 
     utils.retry_until(
         lambda: (
-            utils.select_unit_slot(12),
+            utils.select_unit_slot(9),
             time.sleep(0.1),
             click_all_front_row(),
         ),

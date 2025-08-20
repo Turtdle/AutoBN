@@ -203,11 +203,11 @@ def choose_units():
     time.sleep(0.1)
     utils.precise_click((1893, 1356))
     time.sleep(0.1)
-    for _i in range(4):
+    for _i in range(5):
         utils.precise_click(b)
 
     utils.precise_click((2050, 1356))
-    
+
     """
     time.sleep(0.1)
     utils.scroll_up_fast()
@@ -222,7 +222,7 @@ def choose_units():
         pyautogui.scroll(-10, _pause=False)
     time.sleep(0.1)
     """
-    utils.precise_click((1000, 1356))
+    utils.precise_click((1850, 1356))
 
 
 def big_foot_loop(duration=45):

@@ -13,6 +13,7 @@ def train_wimp():
 
 
 def task_2(first_run):
+    time.sleep(1)
     racks = [
         (1352, 283),
         (1388, 257),

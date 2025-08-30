@@ -84,7 +84,7 @@ def main():
     # Track when task_2 was last run
     last_task_2_time = time.time()
     task_2_interval = 400  # 6 minutes in seconds
-    first_task_2_run = False
+    first_task_2_run = True
 
     task_2(first_run=first_task_2_run)
     first_task_2_run = False

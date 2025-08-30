@@ -87,6 +87,7 @@ def main():
     first_task_2_run = True
 
     task_2(first_run=first_task_2_run)
+    first_task_2_run = False
     print("Starting automated task runner...")
     print("Task 1 will run continuously, Task 2 every 6 minutes")
 
@@ -105,7 +106,7 @@ def main():
             task_2_start_time = time.time()
             print("Running task_2 during delay period...")
             task_2(first_run=first_task_2_run)
-            first_task_2_run = False
+
             task_2_duration = time.time() - task_2_start_time
 
             # Calculate remaining delay time

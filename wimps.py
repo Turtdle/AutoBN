@@ -26,7 +26,7 @@ def task_2(first_run):
         (1508, 250),
     ]
     collection_bubbles = [
-        (1365, 240),
+        (1358, 261),
         (1400, 215),
         (1440, 195),
         (1480, 180),
@@ -84,7 +84,7 @@ def main():
     # Track when task_2 was last run
     last_task_2_time = time.time()
     task_2_interval = 400  # 6 minutes in seconds
-    first_task_2_run = True
+    first_task_2_run = False
 
     task_2(first_run=first_task_2_run)
     first_task_2_run = False

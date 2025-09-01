@@ -12,6 +12,11 @@ def train_wimp():
     utils.precise_click(1920, 300)
 
 
+def click_wait(click):
+    utils.precise_click(click)
+    time.sleep(2)
+
+
 def task_2(first_run):
     time.sleep(1)
     racks = [
@@ -47,20 +52,29 @@ def task_2(first_run):
     time.sleep(1)
 
     for rack in racks:
-        utils.precise_click(rack)
-        time.sleep(2)
+        utils.retry_until(
+            lambda: click_wait(rack),
+            lambda: utils.look_for_image("barracks_menu.png"),
+        )
+
         train_wimp()
         time.sleep(1)
 
 
 def task_1_part_1():
     """First part of task_1 before the 95 second delay"""
-    utils.precise_click(1966, 634)
-    time.sleep(2)
+    utils.retry_until(
+        click_wait((1966, 634)),
+        lambda: utils.look_for_image("barracks_menu.png"),
+    )
+
     train_wimp()
     time.sleep(1)
-    utils.precise_click(2000, 650)
-    time.sleep(2)
+    utils.retry_until(
+        click_wait((2000, 650)),
+        lambda: utils.look_for_image("barracks_menu.png"),
+    )
+
     train_wimp()
 
 

@@ -30,6 +30,13 @@ def task_2(first_run):
         (1432, 289),
         (1462, 271),
         (1508, 250),
+        (1569, 232),
+        (1595, 207),
+        (1435, 335),
+        (1480, 310),
+        (1515, 291),
+        (1560, 285),
+        (1600, 255),
     ]
     collection_bubbles = [
         (1358, 261),
@@ -42,6 +49,13 @@ def task_2(first_run):
         (1440, 240),
         (1480, 225),
         (1520, 210),
+        (1563, 180),
+        (1600, 160),
+        (1440, 280),
+        (1490, 265),
+        (1520, 235),
+        (1565, 220),
+        (1600, 200),
     ]
 
     if not first_run:
@@ -64,14 +78,14 @@ def task_2(first_run):
 def task_1_part_1():
     """First part of task_1 before the 95 second delay"""
     utils.retry_until(
-        click_wait((1966, 634)),
+        lambda: click_wait((1966, 634)),
         lambda: utils.look_for_image("barracks_menu.png"),
     )
 
     train_wimp()
     time.sleep(1)
     utils.retry_until(
-        click_wait((2000, 650)),
+        lambda: click_wait((2000, 650)),
         lambda: utils.look_for_image("barracks_menu.png"),
     )
 

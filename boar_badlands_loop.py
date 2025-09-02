@@ -26,7 +26,7 @@ def choose_units():
         utils.precise_click(a)
 
     for i in range(20):
-        b = utils.look_for_image("lightning_dragoon_icon.png")
+        b = utils.look_for_image("trooper.png")
         if not b:
             time.sleep(1)
         else:

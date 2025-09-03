@@ -24,9 +24,9 @@ def choose_units():
     time.sleep(1)
     for i in range(5):
         utils.precise_click(a)
-
+    utils.scroll_up_fast()
     for i in range(20):
-        b = utils.look_for_image("trooper.png")
+        b = utils.look_for_image("demolitionist.png")
         if not b:
             time.sleep(1)
         else:
@@ -136,4 +136,4 @@ def boar_badlands_loop():
 
 if __name__ == "__main__":
     time.sleep(2)
-    boar_badlands_loop()
+    choose_units()

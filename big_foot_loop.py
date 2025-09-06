@@ -103,12 +103,17 @@ def click_all_front_row():
     time.sleep(0.005)
 
 
+def click_middle_row():
+    for i in (7, 10):
+        utils.select_enemy_slot(i)
+
+
 def turn_loop():
     while not check_turn():
         time.sleep(0.1)
     time.sleep(1)
     utils.select_unit_slot(8)
-    click_all_front_row()
+    click_middle_row()
     utils.retry_until(
         lambda: (time.sleep(0.1)),
         utils.check_turn,
@@ -117,7 +122,7 @@ def turn_loop():
 
     utils.retry_until(
         lambda: (
-            utils.select_unit_slot(9),
+            utils.select_unit_slot(12),
             time.sleep(0.1),
             click_all_front_row(),
         ),
@@ -205,7 +210,7 @@ def choose_units():
     time.sleep(0.1)
     for _i in range(5):
         utils.precise_click(b)
-    utils.precise_click(2024, 1350)
+    utils.precise_click(890, 1350)
     time.sleep(0.1)
     utils.scroll_up_fast()
 
@@ -218,7 +223,7 @@ def choose_units():
     for i in range(500):
         pyautogui.scroll(10, _pause=False)
     time.sleep(1.1)
-    utils.precise_click((410, 1350))
+    utils.precise_click((845, 1350))
     time.sleep(0.1)
 
 
@@ -254,5 +259,5 @@ def big_foot_loop(duration=45):
 
 
 if __name__ == "__main__":
-    choose_units()
-    # big_foot_loop(duration=1)
+    # choose_units()
+    big_foot_loop(duration=1)

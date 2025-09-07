@@ -210,7 +210,7 @@ def choose_units():
     time.sleep(0.1)
     for _i in range(5):
         utils.precise_click(b)
-    # utils.precise_click(890, 1350)
+    utils.precise_click(890, 1350)
     time.sleep(0.1)
     utils.scroll_up_fast()
 

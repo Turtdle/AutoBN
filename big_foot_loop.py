@@ -210,7 +210,7 @@ def choose_units():
     time.sleep(0.1)
     for _i in range(5):
         utils.precise_click(b)
-    utils.precise_click(890, 1350)
+
     time.sleep(0.1)
     utils.scroll_up_fast()
 
@@ -225,6 +225,11 @@ def choose_units():
     time.sleep(1.1)
     utils.precise_click((980, 1350))
     time.sleep(0.1)
+    utils.precise_click((2343, 1243))
+    time.sleep(0.1)
+    utils.precise_click((2345, 780))
+    time.sleep(0.1)
+    utils.precise_click((290, 1350))
 
 
 def big_foot_loop(duration=45):
@@ -259,5 +264,5 @@ def big_foot_loop(duration=45):
 
 
 if __name__ == "__main__":
-    # choose_units()
+    choose_units()
     big_foot_loop(duration=1)

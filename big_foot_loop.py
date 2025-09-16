@@ -223,7 +223,7 @@ def choose_units():
     for i in range(500):
         pyautogui.scroll(10, _pause=False)
     time.sleep(1.1)
-    utils.precise_click((980, 1350))
+    utils.precise_click((423, 1350))
     time.sleep(0.1)
     utils.precise_click((2343, 1243))
     time.sleep(0.1)

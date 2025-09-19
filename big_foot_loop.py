@@ -214,6 +214,8 @@ def choose_units():
     time.sleep(0.1)
     utils.scroll_up_fast()
     time.sleep(0.1)
+    utils.precise_click((1701, 1350))
+    time.sleep(0.1)
     utils.precise_click((1140, 1350))
     time.sleep(0.1)
     utils.precise_click((2343, 1243))
@@ -223,12 +225,6 @@ def choose_units():
     pyautogui.moveTo(1172, 1357)
     for i in range(500):
         pyautogui.scroll(10, _pause=False)
-    time.sleep(1.1)
-    utils.precise_click((423, 1350))
-    time.sleep(0.1)
-    utils.precise_click((2343, 1243))
-    time.sleep(0.1)
-    utils.precise_click((2345, 780))
 
 
 def big_foot_loop(duration=45):

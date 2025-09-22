@@ -186,6 +186,7 @@ def wait_for_atk_button():
 
 
 def choose_units():
+    utils.precise_click((1730, 1350))
     # press vehicles
     utils.precise_click((2343, 1243))
     time.sleep(0.1)
@@ -213,8 +214,6 @@ def choose_units():
 
     time.sleep(0.1)
     utils.scroll_up_fast()
-    time.sleep(0.1)
-    utils.precise_click((1701, 1350))
     time.sleep(0.1)
     utils.precise_click((1140, 1350))
     time.sleep(0.1)

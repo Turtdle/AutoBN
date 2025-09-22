@@ -186,7 +186,7 @@ def wait_for_atk_button():
 
 
 def choose_units():
-    utils.precise_click((1730, 1350))
+    utils.precise_click((2000, 1350))
     # press vehicles
     utils.precise_click((2343, 1243))
     time.sleep(0.1)
@@ -258,4 +258,5 @@ def big_foot_loop(duration=45):
 
 
 if __name__ == "__main__":
+    choose_units()
     big_foot_loop(duration=1)

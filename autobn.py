@@ -8,6 +8,7 @@ import utils
 from utils import precise_click
 import greenborough_loop as gl
 import argparse
+import os
 
 BOAR_BADLANDS = (1600, 700)
 BIGFOOT_COUNTRY = (1833, 33)

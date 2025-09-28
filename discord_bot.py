@@ -8,6 +8,8 @@ from PIL import ImageGrab
 import io
 import threading
 import queue
+import psutil
+import time
 
 # Load environment variables
 load_dotenv()
@@ -667,6 +669,116 @@ async def kill_command(ctx):
 @bot.event
 async def on_error(event, *args, **kwargs):
     print(f"An error occurred in {event}")
+
+
+@bot.command(name="restart")
+async def restart_via_steam_cli(
+    ctx, app_id=251670, game_executable="BattleNations", steam_path=None, wait_time=3
+):
+    """
+    Close a running Steam game and restart it using Steam's command line
+
+    Args:
+        app_id (int): Steam App ID of the game
+        game_executable (str, optional): Name of the game's executable
+        steam_path (str, optional): Path to Steam executable
+        wait_time (int): Time to wait between closing and restarting (seconds)
+    """
+
+    # Find Steam installation
+    if not steam_path:
+        possible_paths = [
+            r"C:\Program Files (x86)\Steam\steam.exe",
+            r"C:\Program Files\Steam\steam.exe",
+            os.path.expanduser(r"~\AppData\Local\Steam\steam.exe"),
+        ]
+
+        for path in possible_paths:
+            if os.path.exists(path):
+                steam_path = path
+                break
+
+        if not steam_path:
+            await ctx.send("Error: Steam installation not found")
+            return False
+
+    # Step 1: Close the game
+    games_closed = []
+
+    if game_executable:
+        # Close by specific executable name
+        for proc in psutil.process_iter(["pid", "name", "exe"]):
+            try:
+                if (
+                    proc.info["name"]
+                    and game_executable.lower() in proc.info["name"].lower()
+                ):
+                    await ctx.send(
+                        f"Found running game: {proc.info['name']} (PID: {proc.info['pid']})"
+                    )
+                    proc.terminate()
+
+                    # Wait for graceful shutdown
+                    try:
+                        proc.wait(timeout=10)
+                        games_closed.append(proc.info["name"])
+                        await ctx.send(f"✓ Closed {proc.info['name']}")
+                    except psutil.TimeoutExpired:
+                        # Force kill if necessary
+                        proc.kill()
+                        games_closed.append(proc.info["name"])
+                        await ctx.send(f"✓ Force-closed {proc.info['name']}")
+
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                continue
+
+    # If games were closed, wait for cleanup
+    if games_closed:
+        await ctx.send(f"Waiting {wait_time} seconds for cleanup...")
+        time.sleep(wait_time)
+    else:
+        await ctx.send("No running game instances found to close")
+
+    # Step 2: Launch the game
+    await ctx.send(f"Starting game with App ID {app_id}...")
+    try:
+        # Use Popen to avoid blocking
+        subprocess.Popen(
+            [steam_path, "-applaunch", str(app_id)],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        await ctx.send("✓ Game launch command sent to Steam")
+        return True
+
+    except Exception as e:
+        await ctx.send(f"✗ Failed to launch game: {e}")
+        return False
+
+
+@bot.command(name="pull")
+async def git_pull(ctx):
+    """Simple git pull in current directory"""
+    try:
+        result = subprocess.run(
+            ["git", "pull"], capture_output=True, text=True, cwd=os.getcwd()
+        )
+
+        if result.returncode == 0:
+            ctx.send("✓ Git pull successful")
+            ctx.send(result.stdout)
+            return True
+        else:
+            ctx.send("✗ Git pull failed")
+            ctx.send(result.stderr)
+            return False
+
+    except FileNotFoundError:
+        ctx.send("✗ Git not found. Make sure Git is installed and in PATH")
+        return False
+    except Exception as e:
+        ctx.send(f"✗ Error during git pull: {e}")
+        return False
 
 
 # Run the bot

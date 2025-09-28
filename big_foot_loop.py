@@ -112,7 +112,7 @@ def turn_loop():
     while not check_turn():
         time.sleep(0.1)
     time.sleep(1)
-    utils.select_unit_slot(8)
+    utils.select_unit_slot(12)
     click_all_front_row()
     utils.retry_until(
         lambda: (time.sleep(0.1)),
@@ -122,7 +122,7 @@ def turn_loop():
 
     utils.retry_until(
         lambda: (
-            utils.select_unit_slot(12),
+            utils.select_unit_slot(13),
             time.sleep(0.1),
             click_all_front_row(),
         ),
@@ -186,7 +186,6 @@ def wait_for_atk_button():
 
 
 def choose_units():
-    utils.precise_click((2000, 1350))
     # press vehicles
     utils.precise_click((2343, 1243))
     time.sleep(0.1)
@@ -213,13 +212,11 @@ def choose_units():
         utils.precise_click(b)
 
     time.sleep(0.1)
+    utils.precise_click((2450, 1350))
     utils.scroll_up_fast()
     time.sleep(0.1)
-    utils.precise_click((1140, 1350))
+    utils.precise_click((980, 1350))
     time.sleep(0.1)
-    utils.precise_click((2343, 1243))
-    time.sleep(0.1)
-    utils.precise_click((2345, 950))
 
     pyautogui.moveTo(1172, 1357)
     for i in range(500):
@@ -258,5 +255,5 @@ def big_foot_loop(duration=45):
 
 
 if __name__ == "__main__":
-    choose_units()
+    # choose_units()
     big_foot_loop(duration=1)

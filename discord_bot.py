@@ -549,7 +549,9 @@ async def stop_command(ctx):
 
 
 @bot.command(name="start")
-async def start_command(ctx, greenborough_count: int = 30, navy_loop: int = 0):
+async def start_command(
+    ctx, greenborough_count: int = 0, navy_loop: int = 0, gold_loop: int = 0
+):
     """Start autobn.py using virtual environment Python
 
     Args:
@@ -601,6 +603,8 @@ async def start_command(ctx, greenborough_count: int = 30, navy_loop: int = 0):
                 str(greenborough_count),
                 "--navy-loop",
                 str(navy_loop),
+                "--gold-loop",
+                str(gold_loop),
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,  # Redirect stderr to stdout
@@ -620,10 +624,7 @@ async def start_command(ctx, greenborough_count: int = 30, navy_loop: int = 0):
         output_thread.start()
 
         await ctx.send(
-            f"✅ Started {SCRIPT_NAME} (PID: {autobn_process.pid}) with greenborough count: {greenborough_count} and navy_loop: {navy_loop}"
-        )
-        print(
-            f"Started {SCRIPT_NAME} with PID: {autobn_process.pid}, greenborough count: {greenborough_count}"
+            f"✅ Started {SCRIPT_NAME} (PID: {autobn_process.pid}) with greenborough count: {greenborough_count} and navy_loop: {navy_loop} and gold_loop: {gold_loop}"
         )
 
     except Exception as e:

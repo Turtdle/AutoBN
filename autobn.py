@@ -1,6 +1,7 @@
 import pyautogui
 import big_foot_loop as bfl
 import boar_badlands_loop as bbl
+import big_foot_loop_gold as gbfl
 import navy_loop as nl
 import time
 import random
@@ -73,7 +74,7 @@ def go_to_world_map(place: list, left=False):
         print(f"!!!ERROR IN GO TO {place}")
 
 
-def main_loop(greenborough_count, navy_loop):
+def main_loop(greenborough_count, navy_loop, gold_loop):
     if greenborough_count > 0:
         go_to_world_map(GREENBOROUGH)
         gl.greenborough_loop(greenborough_count)
@@ -108,7 +109,10 @@ def main_loop(greenborough_count, navy_loop):
             lambda: go_to_world_map(BIGFOOT_COUNTRY), utils.wait_for_atk_button
         ):
             print("ERROR IN LOOKING FOR ATK BUTTON IN BOAR BADLANDS")
-        bfl.big_foot_loop()
+        if gold_loop == 0:
+            bfl.big_foot_loop()
+        else:
+            gbfl.big_foot_loop()
         time.sleep(2)
 
 
@@ -126,9 +130,14 @@ if __name__ == "__main__":
         default=0,
         help="Navy-loop?",
     )
-
+    parser.add_argument(
+        "--gold-loop",
+        type=int,
+        default=0,
+        help="gold-loop?",
+    )
     args = parser.parse_args()
 
     # start from world map
     time.sleep(2)
-    main_loop(args.greenborough_count, args.navy_loop)
+    main_loop(args.greenborough_count, args.navy_loop, args.gold_loop)

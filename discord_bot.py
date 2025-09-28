@@ -10,6 +10,7 @@ import threading
 import queue
 import psutil
 import time
+import utils
 
 # Load environment variables
 load_dotenv()
@@ -779,6 +780,11 @@ async def git_pull(ctx):
     except Exception as e:
         ctx.send(f"✗ Error during git pull: {e}")
         return False
+
+
+@bot.command(name="click_map")
+async def click_map(ctx):
+    utils.precise_click(2453, 1334)
 
 
 # Run the bot

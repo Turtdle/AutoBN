@@ -112,7 +112,7 @@ def turn_loop():
     while not check_turn():
         time.sleep(0.1)
     time.sleep(1)
-    utils.select_unit_slot(12)
+    utils.select_unit_slot(8)
     click_all_front_row()
     utils.retry_until(
         lambda: (time.sleep(0.1)),
@@ -212,15 +212,19 @@ def choose_units():
         utils.precise_click(b)
 
     time.sleep(0.1)
-    utils.precise_click((2450, 1350))
+    # utils.precise_click((2450, 1350))
     utils.scroll_up_fast()
     time.sleep(0.1)
-    utils.precise_click((980, 1350))
+    # utils.precise_click((980, 1350))
     time.sleep(0.1)
 
     pyautogui.moveTo(1172, 1357)
     for i in range(500):
         pyautogui.scroll(10, _pause=False)
+    utils.precise_click((2343, 1243))
+    time.sleep(0.1)
+    utils.precise_click((2345, 875))
+    utils.precise_click((259, 1350))
 
 
 def big_foot_loop(duration=45):

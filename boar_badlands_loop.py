@@ -26,7 +26,7 @@ def choose_units():
         utils.precise_click(a)
     utils.scroll_up_fast()
     for i in range(20):
-        b = utils.look_for_image("demolitionist.png")
+        b = utils.look_for_image("peace_monger.png")
         if not b:
             time.sleep(1)
         else:
@@ -45,6 +45,8 @@ def turn_loop():
     utils.retry_until(
         lambda: (
             utils.select_unit_slot(8),
+            time.sleep(0.1),
+            utils.select_ability(2),
             time.sleep(0.1),
             utils.click_generic_middle_enemy(),
         ),
@@ -135,5 +137,6 @@ def boar_badlands_loop():
 
 
 if __name__ == "__main__":
+    boar_badlands_loop()
     time.sleep(2)
     choose_units()
